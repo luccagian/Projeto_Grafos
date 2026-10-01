@@ -1,169 +1,353 @@
 # Projeto de Teoria dos Grafos
 
-Implementação em Python de operações sobre grafos usando matriz de adjacência e lista de adjacência.
+## Análise da Resiliência da Rede Metroferroviária de São Paulo e Região Metropolitana
 
-O projeto foi desenvolvido como atividade de Teoria dos Grafos e contém exercícios para grafos dirigidos, não dirigidos e ponderados.
+Projeto desenvolvido em Python para a disciplina de Teoria dos Grafos da Universidade Presbiteriana Mackenzie.
 
-## Integrantes:
-- Lucas Franco 10439830
-- Gabriel Medina 10426931
-- Gian Lucca 10438361
+A aplicação utiliza conceitos de grafos para representar e analisar a rede metroferroviária de São Paulo e Região Metropolitana, considerando estações, linhas, conexões entre estações e pontos de integração.
+
+O foco principal do projeto é a análise estrutural da rede, permitindo verificar conectividade, calcular caminhos mínimos e simular a indisponibilidade de estações.
+
+---
+
+## Integrantes
+
+- Lucas Carmo — 10439830
+- Gabriel Medina — 10426931
+- Gian Lucca Campanha Ribeiro — 10438361
+
+---
+
+## Modelagem do Grafo
+
+O estudo de caso utiliza um grafo:
+
+- não orientado;
+- ponderado nas arestas;
+- classificado como tipo 2;
+- com 203 vértices;
+- com 230 arestas.
+
+Cada vértice representa uma estação associada a uma determinada linha.
+
+Por exemplo:
+
+```text
+Sé | Linha 1-Azul
+Sé | Linha 3-Vermelha
+```
+
+Essas duas ocorrências são representadas por vértices diferentes e conectadas por uma aresta de integração.
+
+As arestas representam:
+
+- conexões entre estações consecutivas da mesma linha;
+- integrações entre linhas em uma mesma estação.
+
+O peso das arestas representa uma distância aproximada em quilômetros.
+
+As arestas de integração entre representações da mesma estação possuem peso `0`, pois não representam deslocamento ferroviário entre duas estações diferentes.
+
+---
 
 ## Funcionalidades
 
-### Matriz de adjacência
+A aplicação possui um menu interativo com as seguintes opções:
 
-O arquivo `grafoMatriz.py` implementa:
+```text
+a) Ler dados do arquivo grafo.txt
+b) Gravar dados no arquivo grafo.txt
+c) Inserir vértice
+d) Inserir aresta
+e) Remover vértice
+f) Remover aresta
+g) Mostrar conteúdo do arquivo
+h) Mostrar grafo
+i) Apresentar conexidade
+j) Encerrar a aplicação
+k) Calcular caminho mínimo
+l) Simular falha de estação
+```
 
+As opções de `a` até `j` correspondem às funcionalidades obrigatórias do projeto.
+
+As opções `k` e `l` foram adicionadas para realizar análises relacionadas ao problema estudado.
+
+---
+
+## Matriz de Adjacência
+
+O arquivo `grafoMatriz.py` contém a principal implementação utilizada pelo projeto.
+
+Entre as funcionalidades disponíveis estão:
+
+- inserção e remoção de vértices;
 - inserção e remoção de arestas;
-- grau de entrada, grau de saída e grau total;
+- suporte a grafos dirigidos e não dirigidos;
+- suporte a grafos ponderados;
+- grau de entrada, saída e grau total;
 - identificação de fontes e sorvedouros;
-- verificação de simetria e completude;
-- grafos não dirigidos com a classe `GrafoND`;
-- grafos ponderados com a classe `GrafoPonderado`;
-- leitura de grafos a partir de arquivos;
-- remoção de vértices;
-- grafo complementar;
-- tipos de conexidade de grafos dirigidos e não dirigidos;
-- grafo reduzido baseado nas componentes fortemente conexas;
-- impressão da matriz com o método `show()`.
+- verificação de simetria;
+- verificação de grafo completo;
+- cálculo de conexidade;
+- identificação de componentes conexas;
+- componentes fortemente conexas em grafos dirigidos;
+- construção de grafo reduzido;
+- leitura do arquivo `grafo.txt`;
+- gravação do grafo em arquivo;
+- cálculo de caminho mínimo;
+- simulação de falha de estação;
+- apresentação do grafo em formato de adjacências.
 
-### Lista de adjacência
+A classe `Grafo` representa grafos dirigidos e a classe `GrafoND` representa grafos não dirigidos.
 
-O arquivo `grafoLista.py` implementa:
+---
+
+## Lista de Adjacência
+
+O arquivo `grafoLista.py` contém a implementação baseada em lista de adjacência desenvolvida durante as atividades da disciplina.
+
+Entre as operações disponíveis estão:
 
 - inserção e remoção de arestas;
-- grau de entrada, grau de saída e grau total;
+- grau de entrada, saída e grau total;
 - identificação de fontes e sorvedouros;
 - comparação entre grafos;
 - conversão entre matriz e lista de adjacência;
-- inversão da ordem das listas de vizinhos;
-- verificação de simetria e completude;
+- inversão das listas de vizinhos;
+- verificação de simetria;
+- verificação de completude;
 - leitura de arquivos;
 - remoção de vértices;
-- grafos não dirigidos com a classe `GrafoND`;
+- grafos não dirigidos;
 - grafo complementar.
+
+A representação principal utilizada no estudo de caso final é a matriz de adjacência.
+
+---
+
+## Caminho Mínimo
+
+A aplicação possui uma funcionalidade para calcular o caminho mínimo entre dois vértices utilizando o algoritmo de Dijkstra.
+
+Como os pesos das arestas representam distâncias aproximadas, o algoritmo determina o caminho com menor distância acumulada entre a origem e o destino.
+
+Todos os pesos utilizados são não negativos, incluindo as integrações de peso `0`, permitindo a utilização do algoritmo de Dijkstra.
+
+Caso os dois vértices estejam em componentes diferentes do grafo, o programa informa que não existe caminho entre eles.
+
+---
+
+## Simulação de Falha de Estação
+
+A opção de simulação de falha permite analisar o comportamento estrutural da rede quando uma determinada estação é considerada indisponível.
+
+Como uma mesma estação pode aparecer em diferentes linhas, todas as ocorrências correspondentes à estação selecionada são temporariamente desconsideradas.
+
+Após isso, o programa recalcula as componentes conexas do grafo restante.
+
+A simulação não altera permanentemente o grafo carregado na memória.
+
+Essa funcionalidade permite observar se a indisponibilidade de uma estação:
+
+- mantém a estrutura restante conectada;
+- aumenta a quantidade de componentes;
+- separa determinadas regiões da rede.
+
+---
 
 ## Requisitos
 
 - Python 3
-- Nenhuma biblioteca externa é necessária. O projeto utiliza apenas a biblioteca padrão do Python.
 
-## Como executar
+Não é necessária a instalação de bibliotecas externas para executar a aplicação.
 
-Abra um terminal na pasta do projeto e execute:
+O projeto utiliza apenas módulos da biblioteca padrão do Python.
+
+---
+
+## Como Executar
+
+Abra um terminal na pasta do projeto.
+
+Para iniciar a aplicação:
+
+```bash
+python menu.py
+```
+
+No Windows também pode ser utilizado:
+
+```bash
+py menu.py
+```
+
+O programa exibirá o menu principal e permitirá carregar o arquivo `grafo.txt`.
+
+---
+
+## Executando os Testes
+
+Para executar todos os testes automatizados:
 
 ```bash
 python executar_testes.py
 ```
 
-No Windows, também é possível usar:
+No Windows:
 
 ```bash
 py executar_testes.py
 ```
 
-O resultado esperado é semelhante a:
+O resultado esperado é:
 
 ```text
-Ran 30 tests
+Ran 42 tests
 
 OK
 ```
 
-Cada teste possui o número do exercício correspondente no nome, de `test_exercicio_01_...` até `test_exercicio_30_...`.
+Atualmente o projeto possui 42 testes automatizados.
 
-## Estrutura do projeto
+Eles incluem os 30 testes das atividades anteriores da disciplina e 12 testes específicos das adaptações realizadas para o projeto.
+
+---
+
+## Testes Específicos do Projeto
+
+Os testes adicionais verificam, entre outras situações:
+
+- simetria de arestas em grafos não dirigidos;
+- remoção de arestas;
+- inserção de vértices com rótulos;
+- remoção de vértices e suas arestas;
+- conexidade de grafos não dirigidos;
+- leitura e gravação no formato utilizado pelo projeto;
+- prevenção de duplicação de arestas não dirigidas;
+- tratamento de grafos dirigidos;
+- funcionamento do algoritmo de Dijkstra;
+- utilização de arestas de peso zero;
+- simulação de falha sem modificar permanentemente o grafo;
+- remoção lógica de todas as ocorrências de uma mesma estação durante uma simulação.
+
+---
+
+## Estrutura do Projeto
 
 ```text
-Projeto_Grafos-main/
-├── grafoMatriz.py       # Implementação com matriz de adjacência
-├── grafoLista.py        # Implementação com lista de adjacência
-├── testeExercicios.py   # Testes dos 30 exercícios
-├── executar_testes.py   # Executor dos testes
-├── grafo.txt            # Exemplo de grafo ponderado
-└── README.md            # Documentação do projeto
+Projeto_Grafos/
+├── grafoMatriz.py
+├── grafoLista.py
+├── menu.py
+├── grafo.txt
+├── testeExercicios.py
+├── testeProjeto.py
+├── executar_testes.py
+└── README.md
 ```
 
-## Formato do arquivo de entrada
+### Descrição dos arquivos
 
-O arquivo de entrada possui este formato:
+| Arquivo | Descrição |
+|---|---|
+| `grafoMatriz.py` | Classes e operações principais sobre grafos utilizando matriz de adjacência |
+| `grafoLista.py` | Implementação utilizando lista de adjacência |
+| `menu.py` | Menu principal e interação com o usuário |
+| `grafo.txt` | Dados do estudo de caso da rede metroferroviária |
+| `testeExercicios.py` | Testes das atividades anteriores da disciplina |
+| `testeProjeto.py` | Testes específicos das funcionalidades do projeto |
+| `executar_testes.py` | Executa todos os testes automatizados |
+| `README.md` | Documentação do projeto |
+
+---
+
+## Formato do Arquivo `grafo.txt`
+
+O arquivo utilizado pelo projeto segue a seguinte estrutura:
 
 ```text
-V
-A
-origem destino peso
-origem destino peso
+tipo_do_grafo
+quantidade_de_vertices
+id "rotulo"
+id "rotulo"
+...
+quantidade_de_arestas
+vertice_origem vertice_destino peso
+vertice_origem vertice_destino peso
 ...
 ```
 
-No `grafo.txt` deste projeto:
-
-- `V = 82`: quantidade de vértices;
-- `A = 214`: quantidade de registros de arestas;
-- cada registro possui origem, destino e peso.
-
-Exemplo:
+O início do arquivo utilizado no estudo de caso possui estrutura semelhante a:
 
 ```text
-82
-214
-0 1 2.5
-1 0 2.5
-1 2 2.5
+2
+203
+0 "Jabaquara-Comitê Paralímpico Brasileiro | Linha 1-Azul"
+1 "Conceição | Linha 1-Azul"
+2 "São Judas | Linha 1-Azul"
+...
+230
+0 1 0.917
+1 2 0.917
+...
 ```
 
-Quando o arquivo possui três valores por aresta, a leitura pela matriz reconhece o grafo como ponderado. A leitura pela lista utiliza os dois primeiros valores, origem e destino.
+Onde:
 
-## Exemplo de uso
+- `2` representa um grafo não orientado com peso nas arestas;
+- `203` representa a quantidade de vértices;
+- cada vértice possui um identificador e um rótulo;
+- `230` representa a quantidade de arestas;
+- cada aresta contém os identificadores de seus vértices e o peso correspondente.
 
-### Grafo com matriz de adjacência
+---
 
-```python
-from grafoMatriz import Grafo
+## Pesos das Arestas
 
-grafo = Grafo.from_file("grafo.txt")
+Os pesos representam distâncias aproximadas em quilômetros.
 
-print("Vértices:", grafo.n)
-print("Arestas:", grafo.m)
-print("Grau de entrada do vértice 1:", grafo.inDegree(1))
-print("Grau de saída do vértice 1:", grafo.outDegree(1))
-```
+Quando havia um valor específico disponível para determinado trecho, esse valor foi utilizado.
 
-### Grafo com lista de adjacência
+Para os demais segmentos foram utilizadas estimativas baseadas nas distâncias médias entre as estações das respectivas linhas.
 
-```python
-from grafoLista import Grafo
+Por esse motivo, os pesos devem ser interpretados como aproximações utilizadas para a modelagem computacional, e não como medições exatas de todos os trechos ferroviários.
 
-grafo = Grafo.from_file("grafo.txt")
+As conexões de integração entre linhas em uma mesma estação utilizam peso `0`.
 
-print("Vértices:", grafo.n)
-print("Arestas:", grafo.m)
-grafo.show()
-```
+---
 
-## Testes
+## Conexidade
 
-Os testes verificam individualmente os 30 exercícios, incluindo:
+A aplicação permite verificar a conexidade do grafo.
 
-- graus de entrada e saída;
-- fontes e sorvedouros;
-- simetria e completude;
-- leitura de arquivos;
-- grafos ponderados;
-- inserção, remoção de arestas e remoção de vértices;
-- complemento e conexidade;
-- grafo reduzido;
-- conversão entre representações;
-- igualdade e inversão de listas;
-- saída do método `show()`.
+Para grafos não dirigidos, o programa informa se a estrutura é conexa ou desconexa e permite analisar suas componentes.
 
-## Organização das classes
+No estudo de caso atual, o grafo é classificado como desconexo, ou seja, existem vértices pertencentes a componentes conexas diferentes.
 
-| Classe | Representação | Tipo de grafo |
-|---|---|---|
-| `Grafo` em `grafoMatriz.py` | Matriz | Dirigido |
-| `GrafoND` em `grafoMatriz.py` | Matriz | Não dirigido |
-| `GrafoPonderado` em `grafoMatriz.py` | Matriz | Dirigido ponderado |
-| `Grafo` em `grafoLista.py` | Lista | Dirigido |
-| `GrafoND` em `grafoLista.py` | Lista | Não dirigido |
+---
+
+## Organização das Classes
+
+| Classe | Arquivo | Representação | Tipo |
+|---|---|---|---|
+| `Grafo` | `grafoMatriz.py` | Matriz | Dirigido |
+| `GrafoND` | `grafoMatriz.py` | Matriz | Não dirigido |
+| `Grafo` | `grafoLista.py` | Lista | Dirigido |
+| `GrafoND` | `grafoLista.py` | Lista | Não dirigido |
+
+---
+
+## Objetivo do Projeto
+
+O objetivo do projeto é utilizar conceitos e algoritmos de Teoria dos Grafos para representar e analisar estruturalmente a rede metroferroviária de São Paulo e Região Metropolitana.
+
+A análise busca estudar principalmente:
+
+- conectividade da rede;
+- caminhos entre diferentes pontos;
+- caminhos mínimos;
+- efeitos estruturais provocados pela indisponibilidade de estações;
+- formação de componentes conexas após falhas.
+
+O projeto possui foco estrutural e não utiliza dados detalhados de demanda ou fluxo de passageiros.

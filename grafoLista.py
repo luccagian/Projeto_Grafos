@@ -1,4 +1,14 @@
 # -*- coding: utf-8 -*-
+"""
+Integrantes:
+Gabriel Medina - 10426931
+Gian Lucca Campanha Ribeiro - 10438361
+Lucas Carmo - 10439830
+
+Arquivo: grafoLista.py
+Resumo: implementação do grafo por lista de adjacência usada no projeto.
+"""
+
 from collections import deque
 from pathlib import Path
 

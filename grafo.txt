@@ -1,216 +1,436 @@
-﻿82
-214
-0 1 2.5
-1 0 2.5
-1 2 2.5
-2 1 2.5
-2 3 2.5
-3 2 2.5
-3 4 2.5
-4 3 2.5
-4 5 2.5
-5 4 2.5
-5 6 2.5
-6 5 2.5
-6 7 2.5
-7 6 2.5
-7 8 2.5
-8 7 2.5
-8 9 2.5
-9 8 2.5
-9 10 2.5
-10 9 2.5
-10 11 2.5
-11 10 2.5
-11 12 2.5
-12 11 2.5
-12 13 2.5
-13 12 2.5
-13 14 2.5
-14 13 2.5
-14 15 2.5
-15 14 2.5
-15 16 2.5
-16 15 2.5
-16 17 2.5
-17 16 2.5
-17 18 2.5
-18 17 2.5
-18 19 2.5
-19 18 2.5
-19 20 2.5
-20 19 2.5
-20 21 2.5
-21 20 2.5
-21 22 2.5
-22 21 2.5
-23 24 2.0
-24 23 2.0
-24 25 2.0
-25 24 2.0
-25 26 2.0
-26 25 2.0
-26 27 2.0
-27 26 2.0
-27 28 2.0
-28 27 2.0
-28 29 2.0
-29 28 2.0
-29 30 2.0
-30 29 2.0
-30 31 2.0
-31 30 2.0
-31 32 2.0
-32 31 2.0
-32 33 2.0
-33 32 2.0
-33 34 2.0
-34 33 2.0
-34 35 2.0
-35 34 2.0
-35 36 2.0
-36 35 2.0
-37 38 2.2
-38 37 2.2
-38 39 2.2
-39 38 2.2
-39 40 2.2
-40 39 2.2
-40 41 2.2
-41 40 2.2
-41 42 2.2
-42 41 2.2
-42 43 2.2
-43 42 2.2
-43 44 2.2
-44 43 2.2
-44 45 2.2
-45 44 2.2
-45 46 2.2
-46 45 2.2
-46 47 2.2
-47 46 2.2
-47 48 2.2
-48 47 2.2
-48 49 2.2
-49 48 2.2
-49 50 2.2
-50 49 2.2
-50 51 2.2
-51 50 2.2
-51 52 2.2
-52 51 2.2
-52 53 2.2
-53 52 2.2
-53 54 2.2
-54 53 2.2
-55 56 2.0
-56 55 2.0
-56 57 2.0
-57 56 2.0
-57 58 2.0
-58 57 2.0
-58 59 2.0
-59 58 2.0
-59 60 2.0
-60 59 2.0
-60 61 2.0
-61 60 2.0
-61 62 2.0
-62 61 2.0
-62 63 2.0
-63 62 2.0
-63 64 2.0
-64 63 2.0
-64 65 2.0
-65 64 2.0
-66 67 2.5
-67 66 2.5
-67 68 2.5
-68 67 2.5
-68 69 2.5
-69 68 2.5
-69 70 2.5
-70 69 2.5
-70 71 2.5
-71 70 2.5
-71 72 2.5
-72 71 2.5
-72 73 2.5
-73 72 2.5
-73 74 2.5
-74 73 2.5
-74 75 2.5
-75 74 2.5
-75 76 2.5
-76 75 2.5
-76 77 2.5
-77 76 2.5
-77 78 2.5
-78 77 2.5
-78 79 2.5
-79 78 2.5
-79 80 2.5
-80 79 2.5
-80 81 2.5
-81 80 2.5
-1 37
-37 1
-2 38
-38 2
-3 39
-39 3
-4 40
-40 4
-5 41
-41 5
-6 42
-42 6
-7 43
-43 7
-8 44
-44 8
-9 45
-45 9
-10 46
-46 10
-23 47
-47 23
-24 48
-48 24
-25 49
-49 25
-26 50
-50 26
-27 51
-51 27
-28 52
-52 28
-29 53
-53 29
-30 54
-54 30
-55 66
-66 55
-56 67
-67 56
-57 68
-68 57
-58 69
-69 58
-59 70
-70 59
-60 71
-71 60
-61 72
-72 61
-62 73
-73 62
-63 74
-74 63
-64 75
-75 64
-65 76
-76 65
-22 81
-81 22
+2
+203
+0 "Jabaquara-Comitê Paralímpico Brasileiro | Linha 1-Azul"
+1 "Conceição | Linha 1-Azul"
+2 "São Judas | Linha 1-Azul"
+3 "Saúde | Linha 1-Azul"
+4 "Praça da Árvore | Linha 1-Azul"
+5 "Santa Cruz | Linha 1-Azul"
+6 "Vila Mariana | Linha 1-Azul"
+7 "Ana Rosa | Linha 1-Azul"
+8 "Paraíso | Linha 1-Azul"
+9 "Vergueiro-Sebrae | Linha 1-Azul"
+10 "São Joaquim | Linha 1-Azul"
+11 "Japão-Liberdade | Linha 1-Azul"
+12 "Sé | Linha 1-Azul"
+13 "São Bento | Linha 1-Azul"
+14 "Luz | Linha 1-Azul"
+15 "Tiradentes | Linha 1-Azul"
+16 "Armênia | Linha 1-Azul"
+17 "Portuguesa-Tietê | Linha 1-Azul"
+18 "Carandiru | Linha 1-Azul"
+19 "Santana | Linha 1-Azul"
+20 "Jardim São Paulo-Ayrton Senna | Linha 1-Azul"
+21 "Parada Inglesa | Linha 1-Azul"
+22 "Tucuruvi | Linha 1-Azul"
+23 "Vila Prudente | Linha 2-Verde"
+24 "Tamanduateí | Linha 2-Verde"
+25 "Sacomã | Linha 2-Verde"
+26 "Alto do Ipiranga | Linha 2-Verde"
+27 "Santos-Imigrantes | Linha 2-Verde"
+28 "Chácara Klabin | Linha 2-Verde"
+29 "Ana Rosa | Linha 2-Verde"
+30 "Paraíso | Linha 2-Verde"
+31 "Brigadeiro | Linha 2-Verde"
+32 "Trianon-Masp | Linha 2-Verde"
+33 "Consolação | Linha 2-Verde"
+34 "Clínicas | Linha 2-Verde"
+35 "Santuário N.Sra. de Fátima-Sumaré | Linha 2-Verde"
+36 "Vila Madalena | Linha 2-Verde"
+37 "Corinthians-Itaquera | Linha 3-Vermelha"
+38 "Artur Alvim | Linha 3-Vermelha"
+39 "Patriarca | Linha 3-Vermelha"
+40 "Guilhermina-Esperança | Linha 3-Vermelha"
+41 "Vila Matilde | Linha 3-Vermelha"
+42 "Penha | Linha 3-Vermelha"
+43 "Carrão | Linha 3-Vermelha"
+44 "Tatuapé | Linha 3-Vermelha"
+45 "Belém | Linha 3-Vermelha"
+46 "Bresser-Mooca | Linha 3-Vermelha"
+47 "Brás | Linha 3-Vermelha"
+48 "Pedro II | Linha 3-Vermelha"
+49 "Sé | Linha 3-Vermelha"
+50 "Anhangabaú | Linha 3-Vermelha"
+51 "República | Linha 3-Vermelha"
+52 "Santa Cecília | Linha 3-Vermelha"
+53 "Marechal Deodoro | Linha 3-Vermelha"
+54 "Palmeiras-Barra Funda | Linha 3-Vermelha"
+55 "Vila Sônia | Linha 4-Amarela"
+56 "São Paulo-Morumbi | Linha 4-Amarela"
+57 "Butantã | Linha 4-Amarela"
+58 "Pinheiros | Linha 4-Amarela"
+59 "Faria Lima | Linha 4-Amarela"
+60 "Fradique Coutinho | Linha 4-Amarela"
+61 "Oscar Freire | Linha 4-Amarela"
+62 "Paulista | Linha 4-Amarela"
+63 "Higienópolis-Mackenzie | Linha 4-Amarela"
+64 "República | Linha 4-Amarela"
+65 "Luz | Linha 4-Amarela"
+66 "Capão Redondo | Linha 5-Lilás"
+67 "Campo Limpo | Linha 5-Lilás"
+68 "Vila das Belezas | Linha 5-Lilás"
+69 "Giovanni Gronchi | Linha 5-Lilás"
+70 "Santo Amaro | Linha 5-Lilás"
+71 "Largo Treze | Linha 5-Lilás"
+72 "Adolfo Pinheiro | Linha 5-Lilás"
+73 "Alto da Boa Vista | Linha 5-Lilás"
+74 "Borba Gato | Linha 5-Lilás"
+75 "Brooklin | Linha 5-Lilás"
+76 "Campo Belo | Linha 5-Lilás"
+77 "Eucaliptos | Linha 5-Lilás"
+78 "Moema | Linha 5-Lilás"
+79 "AACD-Servidor | Linha 5-Lilás"
+80 "Hospital São Paulo | Linha 5-Lilás"
+81 "Santa Cruz | Linha 5-Lilás"
+82 "Chácara Klabin | Linha 5-Lilás"
+83 "Palmeiras-Barra Funda | Linha 7-Rubi"
+84 "Água Branca | Linha 7-Rubi"
+85 "Lapa | Linha 7-Rubi"
+86 "Piqueri | Linha 7-Rubi"
+87 "Pirituba | Linha 7-Rubi"
+88 "Vila Clarice | Linha 7-Rubi"
+89 "Jaraguá | Linha 7-Rubi"
+90 "Vila Aurora | Linha 7-Rubi"
+91 "Perus | Linha 7-Rubi"
+92 "Caieiras | Linha 7-Rubi"
+93 "Franco da Rocha | Linha 7-Rubi"
+94 "Baltazar Fidélis | Linha 7-Rubi"
+95 "Francisco Morato | Linha 7-Rubi"
+96 "Botujuru | Linha 7-Rubi"
+97 "Campo Limpo Paulista | Linha 7-Rubi"
+98 "Várzea Paulista | Linha 7-Rubi"
+99 "Jundiaí | Linha 7-Rubi"
+100 "Júlio Prestes | Linha 8-Diamante"
+101 "Palmeiras-Barra Funda | Linha 8-Diamante"
+102 "Lapa | Linha 8-Diamante"
+103 "Domingos de Moraes | Linha 8-Diamante"
+104 "Imperatriz Leopoldina | Linha 8-Diamante"
+105 "Presidente Altino | Linha 8-Diamante"
+106 "Osasco | Linha 8-Diamante"
+107 "Comandante Sampaio | Linha 8-Diamante"
+108 "Quitaúna | Linha 8-Diamante"
+109 "General Miguel Costa | Linha 8-Diamante"
+110 "Carapicuíba | Linha 8-Diamante"
+111 "Santa Terezinha | Linha 8-Diamante"
+112 "Antonio João | Linha 8-Diamante"
+113 "Barueri | Linha 8-Diamante"
+114 "Jardim Belval | Linha 8-Diamante"
+115 "Jardim Silveira | Linha 8-Diamante"
+116 "Jandira | Linha 8-Diamante"
+117 "Sagrado Coração | Linha 8-Diamante"
+118 "Engenheiro Cardoso | Linha 8-Diamante"
+119 "Itapevi | Linha 8-Diamante"
+120 "Santa Rita | Linha 8-Diamante"
+121 "Ambuitá | Linha 8-Diamante"
+122 "Amador Bueno | Linha 8-Diamante"
+123 "Osasco | Linha 9-Esmeralda"
+124 "Presidente Altino | Linha 9-Esmeralda"
+125 "Ceasa | Linha 9-Esmeralda"
+126 "Villa Lobos-Jaguaré | Linha 9-Esmeralda"
+127 "Cidade Universitária | Linha 9-Esmeralda"
+128 "Pinheiros | Linha 9-Esmeralda"
+129 "Hebraica-Rebouças | Linha 9-Esmeralda"
+130 "Cidade Jardim | Linha 9-Esmeralda"
+131 "Vila Olímpia | Linha 9-Esmeralda"
+132 "Berrini | Linha 9-Esmeralda"
+133 "Morumbi | Linha 9-Esmeralda"
+134 "Granja Julieta | Linha 9-Esmeralda"
+135 "João Dias | Linha 9-Esmeralda"
+136 "Santo Amaro | Linha 9-Esmeralda"
+137 "Socorro | Linha 9-Esmeralda"
+138 "Jurubatuba | Linha 9-Esmeralda"
+139 "Autódromo | Linha 9-Esmeralda"
+140 "Primavera-Interlagos | Linha 9-Esmeralda"
+141 "Grajaú | Linha 9-Esmeralda"
+142 "Mendes-Vila Natal | Linha 9-Esmeralda"
+143 "Varginha | Linha 9-Esmeralda"
+144 "Palmeiras-Barra Funda | Linha 10-Turquesa"
+145 "Luz | Linha 10-Turquesa"
+146 "Brás | Linha 10-Turquesa"
+147 "Juventus-Mooca | Linha 10-Turquesa"
+148 "Ipiranga | Linha 10-Turquesa"
+149 "Tamanduateí | Linha 10-Turquesa"
+150 "São Caetano do Sul | Linha 10-Turquesa"
+151 "Utinga | Linha 10-Turquesa"
+152 "Prefeito Saladino | Linha 10-Turquesa"
+153 "Prefeito Celso Daniel-Santo André | Linha 10-Turquesa"
+154 "Capuava | Linha 10-Turquesa"
+155 "Mauá | Linha 10-Turquesa"
+156 "Guapituba | Linha 10-Turquesa"
+157 "Ribeirão Pires | Linha 10-Turquesa"
+158 "Rio Grande da Serra | Linha 10-Turquesa"
+159 "Palmeiras-Barra Funda | Linha 11-Coral"
+160 "Luz | Linha 11-Coral"
+161 "Brás | Linha 11-Coral"
+162 "Tatuapé | Linha 11-Coral"
+163 "Corinthians-Itaquera | Linha 11-Coral"
+164 "Dom Bosco | Linha 11-Coral"
+165 "José Bonifácio | Linha 11-Coral"
+166 "Guaianases | Linha 11-Coral"
+167 "Antônio Gianetti Neto | Linha 11-Coral"
+168 "Ferraz de Vasconcelos | Linha 11-Coral"
+169 "Poá | Linha 11-Coral"
+170 "Calmon Viana | Linha 11-Coral"
+171 "Suzano | Linha 11-Coral"
+172 "Jundiapeba | Linha 11-Coral"
+173 "Braz Cubas | Linha 11-Coral"
+174 "Mogi das Cruzes | Linha 11-Coral"
+175 "Estudantes | Linha 11-Coral"
+176 "Brás | Linha 12-Safira"
+177 "Tatuapé | Linha 12-Safira"
+178 "Engenheiro Goulart | Linha 12-Safira"
+179 "USP Leste | Linha 12-Safira"
+180 "Comendador Ermelino | Linha 12-Safira"
+181 "São Miguel Paulista | Linha 12-Safira"
+182 "Jardim Helena-Vila Mara | Linha 12-Safira"
+183 "Itaim Paulista | Linha 12-Safira"
+184 "Jardim Romano | Linha 12-Safira"
+185 "Engenheiro Manoel Feio | Linha 12-Safira"
+186 "Itaquaquecetuba | Linha 12-Safira"
+187 "Aracaré | Linha 12-Safira"
+188 "Calmon Viana | Linha 12-Safira"
+189 "Engenheiro Goulart | Linha 13-Jade"
+190 "Guarulhos-Cecap | Linha 13-Jade"
+191 "Aeroporto-Guarulhos | Linha 13-Jade"
+192 "Vila Prudente | Linha 15-Prata"
+193 "Oratório | Linha 15-Prata"
+194 "São Lucas | Linha 15-Prata"
+195 "Camilo Haddad | Linha 15-Prata"
+196 "Vila Tolstói | Linha 15-Prata"
+197 "Vila União | Linha 15-Prata"
+198 "Jardim Planalto | Linha 15-Prata"
+199 "Sapopemba | Linha 15-Prata"
+200 "Fazenda da Juta | Linha 15-Prata"
+201 "São Mateus | Linha 15-Prata"
+202 "Jardim Colonial | Linha 15-Prata"
+230
+0 1 0.917
+1 2 0.917
+2 3 0.917
+3 4 0.917
+4 5 0.917
+5 6 0.917
+5 81 0.0
+6 7 0.917
+7 8 0.917
+7 29 0.0
+8 9 0.917
+8 30 0.0
+9 10 0.917
+10 11 0.917
+11 12 0.544
+12 13 0.917
+12 49 0.0
+13 14 0.917
+14 15 0.917
+14 65 0.0
+14 145 0.0
+14 160 0.0
+15 16 0.917
+16 17 0.917
+17 18 0.917
+18 19 0.917
+19 20 1.474
+20 21 0.917
+21 22 0.917
+23 24 1.131
+23 192 0.0
+24 25 1.697
+24 149 0.0
+25 26 1.131
+26 27 1.131
+27 28 1.131
+28 29 1.131
+28 82 0.0
+29 30 0.706
+30 31 1.131
+31 32 1.131
+32 33 1.131
+33 34 1.131
+34 35 1.131
+35 36 1.131
+37 38 1.296
+37 163 0.0
+38 39 1.296
+39 40 1.296
+40 41 1.296
+41 42 1.296
+42 43 2.28
+43 44 1.296
+44 45 1.296
+44 162 0.0
+44 177 0.0
+45 46 1.296
+46 47 1.296
+47 48 1.296
+47 146 0.0
+47 161 0.0
+47 176 0.0
+48 49 1.296
+49 50 1.296
+50 51 0.641
+51 52 1.296
+51 64 0.0
+52 53 1.296
+53 54 1.296
+54 83 0.0
+54 101 0.0
+54 144 0.0
+54 159 0.0
+55 56 1.161
+56 57 2.446
+57 58 0.842
+58 59 1.161
+58 128 0.0
+59 60 1.161
+60 61 1.161
+61 62 1.161
+62 63 1.161
+63 64 1.161
+64 65 1.161
+65 145 0.0
+65 160 0.0
+66 67 1.171
+67 68 1.171
+68 69 1.171
+69 70 2.32
+70 71 1.171
+70 136 0.0
+71 72 1.171
+72 73 1.171
+73 74 1.171
+74 75 1.171
+75 76 1.171
+76 77 1.171
+77 78 1.171
+78 79 1.171
+79 80 0.654
+80 81 1.171
+81 82 1.171
+83 84 2.75
+83 101 0.0
+83 144 0.0
+83 159 0.0
+84 85 2.75
+85 86 2.75
+86 87 2.75
+87 88 2.75
+88 89 2.75
+89 90 2.75
+90 91 2.75
+91 92 2.75
+92 93 2.75
+93 94 2.75
+94 95 2.75
+95 96 2.75
+96 97 2.75
+97 98 2.75
+98 99 2.75
+100 101 2.0
+101 102 2.0
+101 144 0.0
+101 159 0.0
+102 103 2.0
+103 104 2.0
+104 105 2.0
+105 106 2.0
+105 124 0.0
+106 107 2.0
+106 123 0.0
+107 108 2.0
+108 109 2.0
+109 110 2.0
+110 111 2.0
+111 112 2.0
+112 113 2.0
+113 114 2.0
+114 115 2.0
+115 116 2.0
+116 117 2.0
+117 118 2.0
+118 119 2.0
+119 120 2.0
+120 121 2.0
+121 122 2.0
+123 124 1.75
+124 125 1.75
+125 126 1.75
+126 127 1.75
+127 128 1.75
+128 129 1.75
+129 130 1.75
+130 131 1.75
+131 132 1.75
+132 133 1.75
+133 134 1.75
+134 135 1.75
+135 136 1.75
+136 137 1.75
+137 138 1.75
+138 139 1.75
+139 140 1.75
+140 141 1.75
+141 142 1.75
+142 143 1.75
+144 145 2.5
+144 159 0.0
+145 146 2.5
+145 160 0.0
+146 147 2.5
+146 161 0.0
+146 176 0.0
+147 148 2.5
+148 149 2.5
+149 150 2.5
+150 151 2.5
+151 152 2.5
+152 153 2.5
+153 154 2.5
+154 155 2.5
+155 156 2.5
+156 157 2.5
+157 158 2.5
+159 160 2.5
+160 161 2.5
+161 162 2.5
+161 176 0.0
+162 163 11.6
+162 177 0.0
+163 164 2.5
+164 165 2.5
+165 166 2.5
+166 167 2.5
+167 168 2.5
+168 169 2.5
+169 170 2.5
+170 171 2.5
+170 188 0.0
+171 172 2.5
+172 173 2.5
+173 174 2.5
+174 175 2.5
+176 177 2.5
+177 178 9.0
+178 179 2.5
+178 189 0.0
+179 180 2.5
+180 181 2.5
+181 182 2.5
+182 183 2.5
+183 184 2.5
+184 185 2.5
+185 186 2.5
+186 187 2.5
+187 188 2.5
+189 190 7.0
+190 191 3.5
+192 193 2.263
+193 194 1.446
+194 195 1.446
+195 196 1.446
+196 197 1.446
+197 198 0.962
+198 199 1.446
+199 200 1.446
+200 201 1.446
+201 202 1.446

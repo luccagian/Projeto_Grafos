@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
-"""Um teste identificado para cada exercício pedido na atividade."""
+"""
+Integrantes:
+Gabriel Medina - 10426931
+Gian Lucca Campanha Ribeiro - 10438361
+Lucas Carmo - 10439830
+
+Arquivo: testeExercicios.py
+Resumo: Testes dos exercícios propostos na atividade.
+"""
 
 import io
 import tempfile

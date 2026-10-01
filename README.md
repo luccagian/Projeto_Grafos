@@ -323,7 +323,7 @@ A aplicação permite verificar a conexidade do grafo.
 
 Para grafos não dirigidos, o programa informa se a estrutura é conexa ou desconexa e permite analisar suas componentes.
 
-No estudo de caso atual, o grafo é classificado como desconexo, ou seja, existem vértices pertencentes a componentes conexas diferentes.
+No estudo de caso atual, o grafo é classificado como conexo, ou seja, existe caminho entre quaisquer dois vértices da rede modelada.
 
 ---
 

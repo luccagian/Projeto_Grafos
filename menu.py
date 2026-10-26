@@ -12,7 +12,7 @@ Resumo: menu principal do projeto de resiliência da rede metroferroviária.
 from pathlib import Path
 
 from grafoMatriz import Grafo, GrafoND
-
+from visualizadorPyvis import visualizar_grafo
 
 ARQUIVO_PADRAO = Path("grafo.txt")
 TITULO = "RESILIÊNCIA DA REDE METROFERROVIÁRIA DE SÃO PAULO E REGIÃO METROPOLITANA"
@@ -37,6 +37,7 @@ def exibir_menu() -> None:
     print("j) Encerrar a aplicação")
     print("k) Calcular caminho mínimo entre duas estações")
     print("l) Simular falha de uma estação")
+    print("m) Visualizar grafo completo - PyVis")
 
 
 def exigir_grafo(grafo):
@@ -248,9 +249,34 @@ def menu(caminho: Path = ARQUIVO_PADRAO) -> None:
             elif opcao == "l":
                 if exigir_grafo(grafo):
                     simular_falha_estacao(grafo)
+                   
+            elif opcao == 'm':
+
+                if g is None:
+                    print("\n[AVISO] Carregue o grafo primeiro.")
+                    continue
+
+                try:
+                    visualizar_grafo(
+                        g,
+                        arquivo_saida="grafo_completo.html"
+                    )
+
+                except ModuleNotFoundError:
+                    print(
+                        "\n[ERRO] A biblioteca PyVis não está instalada."
+                    )
+                    print(
+                        "Execute: pip install pyvis"
+                    )
+
+                except Exception as e:
+                    print(
+                        f"\n[ERRO] Falha ao gerar visualização: {e}"
+                    )
 
             else:
-                print("\n[ERRO] Opção inválida. Escolha uma letra entre 'a' e 'l'.")
+                print("\n[ERRO] Opção inválida. Escolha uma letra entre 'a' e 'm'.")
 
         except (ValueError, IndexError, OSError) as erro:
             print(f"\n[ERRO] {erro}")

@@ -5,46 +5,13 @@ Gabriel Medina - 10426931
 Gian Lucca Campanha Ribeiro - 10438361
 Lucas Carmo - 10439830
 
-Arquivo: menu.py
-Resumo: menu principal do projeto de resiliência da rede metroferroviária.
+Arquivo: acoes_menu.py
+Resumo: ações das opções do menu do projeto.
 """
 
 from pathlib import Path
 
-from grafoMatriz import Grafo, GrafoND
-from visualizadorPyvis import visualizar_grafo
-
-ARQUIVO_PADRAO = Path("grafo.txt")
-TITULO = "RESILIÊNCIA DA REDE METROFERROVIÁRIA DE SÃO PAULO E REGIÃO METROPOLITANA"
-
-
-def exibir_cabecalho() -> None:
-    print("\n" + "=" * 72)
-    print(TITULO.center(72))
-    print("=" * 72)
-
-
-def exibir_menu() -> None:
-    print("a) Ler dados do arquivo grafo.txt")
-    print("b) Gravar dados no arquivo grafo.txt")
-    print("c) Inserir vértice")
-    print("d) Inserir aresta")
-    print("e) Remover vértice")
-    print("f) Remover aresta")
-    print("g) Mostrar conteúdo do arquivo")
-    print("h) Mostrar grafo")
-    print("i) Apresentar conexidade")
-    print("j) Encerrar a aplicação")
-    print("k) Calcular caminho mínimo entre duas estações")
-    print("l) Simular falha de uma estação")
-    print("m) Visualizar grafo completo - PyVis")
-
-
-def exigir_grafo(grafo):
-    if grafo is None:
-        print("\n[AVISO] Primeiro carregue o grafo usando a opção 'a'.")
-        return False
-    return True
+from grafos.grafoMatriz import Grafo, GrafoND
 
 
 def ler_grafo(caminho: Path):
@@ -59,7 +26,7 @@ def ler_grafo(caminho: Path):
 
 def gravar_grafo(grafo, caminho: Path) -> None:
     grafo.salvar_arquivo(caminho)
-    print(f"\n[SUCESSO] Grafo gravado em '{caminho}")
+    print(f"\n[SUCESSO] Grafo gravado em '{caminho}'.")
 
 
 def inserir_vertice(grafo) -> None:
@@ -195,92 +162,11 @@ def mostrar_conexidade(grafo) -> None:
     reduzido.mostrar_lista_adjacencia()
 
 
-def menu(caminho: Path = ARQUIVO_PADRAO) -> None:
-    grafo = None
-
-    while True:
-        exibir_cabecalho()
-        exibir_menu()
-        opcao = input("\nEscolha uma opção: ").strip().lower()
-
-        try:
-            if opcao == "a":
-                grafo = ler_grafo(caminho)
-
-            elif opcao == "b":
-                if exigir_grafo(grafo):
-                    gravar_grafo(grafo, caminho)
-
-            elif opcao == "c":
-                if exigir_grafo(grafo):
-                    inserir_vertice(grafo)
-
-            elif opcao == "d":
-                if exigir_grafo(grafo):
-                    inserir_aresta(grafo)
-
-            elif opcao == "e":
-                if exigir_grafo(grafo):
-                    remover_vertice(grafo)
-
-            elif opcao == "f":
-                if exigir_grafo(grafo):
-                    remover_aresta(grafo)
-
-            elif opcao == "g":
-                mostrar_conteudo_arquivo(caminho)
-
-            elif opcao == "h":
-                if exigir_grafo(grafo):
-                    mostrar_grafo(grafo)
-
-            elif opcao == "i":
-                if exigir_grafo(grafo):
-                    mostrar_conexidade(grafo)
-
-            elif opcao == "j":
-                print("\nAplicação encerrada.")
-                break
-
-            elif opcao == "k":
-                if exigir_grafo(grafo):
-                    mostrar_caminho_minimo(grafo)
-
-            elif opcao == "l":
-                if exigir_grafo(grafo):
-                    simular_falha_estacao(grafo)
-                   
-            elif opcao == 'm':
-
-                if g is None:
-                    print("\n[AVISO] Carregue o grafo primeiro.")
-                    continue
-
-                try:
-                    visualizar_grafo(
-                        g,
-                        arquivo_saida="grafo_completo.html"
-                    )
-
-                except ModuleNotFoundError:
-                    print(
-                        "\n[ERRO] A biblioteca PyVis não está instalada."
-                    )
-                    print(
-                        "Execute: pip install pyvis"
-                    )
-
-                except Exception as e:
-                    print(
-                        f"\n[ERRO] Falha ao gerar visualização: {e}"
-                    )
-
-            else:
-                print("\n[ERRO] Opção inválida. Escolha uma letra entre 'a' e 'm'.")
-
-        except (ValueError, IndexError, OSError) as erro:
-            print(f"\n[ERRO] {erro}")
-
-
-if __name__ == "__main__":
-    menu()
+def visualizar(grafo) -> None:
+    try:
+        from visualizacao.visualizadorPyvis import visualizar_grafo
+        visualizar_grafo(grafo, arquivo_saida="grafo_completo.html")
+    except ModuleNotFoundError as erro:
+        if erro.name != "pyvis":
+            raise
+        print("\n[ERRO] Instale o PyVis: python -m pip install -r requirements.txt")

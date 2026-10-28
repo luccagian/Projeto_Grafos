@@ -15,9 +15,9 @@ import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
 
-from grafoMatriz import Grafo, GrafoND, GrafoPonderado
-from grafoLista import Grafo as GrafoLista
-from grafoLista import GrafoND as GrafoNDLista
+from grafos.grafoMatriz import Grafo, GrafoND, GrafoPonderado
+from grafos.grafoLista import Grafo as GrafoLista
+from grafos.grafoLista import GrafoND as GrafoNDLista
 
 
 class TesteExercicios(unittest.TestCase):

@@ -11,6 +11,9 @@ Resumo: implementação do grafo por matriz de adjacência usada no projeto.
 
 from collections import deque
 from pathlib import Path
+import heapq
+import math
+import shlex
 
 
 class Grafo:
@@ -20,8 +23,10 @@ class Grafo:
         self,
         n=TAM_MAX_DEFAULT,
         ponderado=False,
-        tipo=0,
-        rotulos=None
+        tipo=None,
+        rotulos=None,
+        tipo_grafo=None,
+        pesos_vertices=None
     ):
         if n < 0:
             raise ValueError(
@@ -30,16 +35,22 @@ class Grafo:
 
         self.n = n
         self.m = 0
-        self.tipo = tipo
+        self.tipo = tipo_grafo if tipo_grafo is not None else tipo
+        if self.tipo is None:
+            self.tipo = (2 if ponderado else 0) if isinstance(self, GrafoND) else (6 if ponderado else 4)
         self.ponderado = ponderado
+        self.pesos_vertices = list(pesos_vertices) if pesos_vertices is not None else [None] * n
+        if len(self.pesos_vertices) != n:
+            raise ValueError("Quantidade de pesos de vértices inválida.")
 
         if rotulos is None:
-            self.rotulos = {
-                i: f"Vértice {i}"
-                for i in range(n)
-            }
+            self.rotulos = [f"Vértice {i}" for i in range(n)]
+        elif isinstance(rotulos, dict):
+            self.rotulos = [rotulos[i] for i in range(n)]
         else:
-            self.rotulos = dict(rotulos)
+            self.rotulos = list(rotulos)
+        if len(self.rotulos) != n:
+            raise ValueError("Quantidade de rótulos inválida.")
 
         vazio = None if ponderado else 0
 
@@ -67,30 +78,17 @@ class Grafo:
     def nome_vertice(self, v):
         self._validar_vertice(v)
 
-        return self.rotulos.get(
-            v,
-            f"Vértice {v}"
-        )
+        return self.rotulos[v]
 
-    def inserir_vertice(self, nome=None):
+    def inserir_vertice(self, nome=None, peso=None):
         novo_id = self.n
-
         vazio = None if self.ponderado else 0
-
         for linha in self.adj:
             linha.append(vazio)
-
-        self.adj.append(
-            [vazio] * (self.n + 1)
-        )
-
+        self.adj.append([vazio] * (self.n + 1))
         self.n += 1
-
-        if nome is None or not nome.strip():
-            nome = f"Vértice {novo_id}"
-
-        self.rotulos[novo_id] = nome
-
+        self.rotulos.append(nome.strip() if nome and nome.strip() else f"Vértice {novo_id}")
+        self.pesos_vertices.append(peso)
         return novo_id
 
     insereV = inserir_vertice
@@ -168,22 +166,8 @@ class Grafo:
         for linha in self.adj:
             linha.pop(v)
 
-        novos_rotulos = {}
-
-        for antigo_id, nome in self.rotulos.items():
-
-            if antigo_id == v:
-                continue
-
-            novo_id = (
-                antigo_id - 1
-                if antigo_id > v
-                else antigo_id
-            )
-
-            novos_rotulos[novo_id] = nome
-
-        self.rotulos = novos_rotulos
+        self.rotulos.pop(v)
+        self.pesos_vertices.pop(v)
 
         self.n -= 1
 
@@ -372,7 +356,7 @@ class Grafo:
     def show(self):
 
         print(
-            f"\nTipo: {self.tipo}"
+            f"\nn: {self.n} | Tipo: {self.tipo}"
             f" | Vértices: {self.n}"
             f" | Arestas: {self.m}"
         )
@@ -399,249 +383,145 @@ class Grafo:
                 + ", ".join(vizinhos)
             )
 
+        print("fim da impressao")
+
+    mostrar_lista_adjacencia = show
+
     # Leitura do grafo.txt
 
+    @property
+    def tipo_grafo(self):
+        return self.tipo
+
+    @property
+    def direcionado(self):
+        return not isinstance(self, GrafoND)
+
+    @property
+    def peso_no_vertice(self):
+        return self.tipo in (1, 3, 5, 7)
+
+    @property
+    def peso_na_aresta(self):
+        return self.ponderado
+
+    def isSource(self, v):
+        return int(self.inDegree(v) == 0 and self.outDegree(v) > 0)
+
+    def isSink(self, v):
+        return int(self.outDegree(v) == 0 and self.inDegree(v) > 0)
+
+    def isSymmetric(self):
+        return int(all(self._tem_aresta(i, j) == self._tem_aresta(j, i)
+                       for i in range(self.n) for j in range(self.n)))
+
+    def isComplete(self):
+        return int(all(self._tem_aresta(i, j) for i in range(self.n)
+                       for j in range(self.n) if i != j))
+
+    def complemento(self):
+        resultado = GrafoND(self.n) if isinstance(self, GrafoND) else Grafo(self.n)
+        for i in range(self.n):
+            for j in range(self.n):
+                if i != j and not self._tem_aresta(i, j):
+                    resultado.insereA(i, j)
+        return resultado
+
+    def caminho_minimo(self, origem, destino):
+        self._validar_vertice(origem)
+        self._validar_vertice(destino)
+        for i in range(self.n):
+            for j in range(self.n):
+                if self._tem_aresta(i, j) and (not math.isfinite(self.adj[i][j]) or self.adj[i][j] < 0):
+                    raise ValueError("Dijkstra exige pesos finitos e não negativos.")
+        distancias = [math.inf] * self.n
+        anterior = [None] * self.n
+        distancias[origem] = 0
+        fila = [(0, origem)]
+        while fila:
+            distancia, atual = heapq.heappop(fila)
+            if distancia != distancias[atual]:
+                continue
+            if atual == destino:
+                break
+            for vizinho in range(self.n):
+                if self._tem_aresta(atual, vizinho):
+                    nova = distancia + self.adj[atual][vizinho]
+                    if nova < distancias[vizinho]:
+                        distancias[vizinho] = nova
+                        anterior[vizinho] = atual
+                        heapq.heappush(fila, (nova, vizinho))
+        if math.isinf(distancias[destino]):
+            return math.inf, []
+        caminho = []
+        atual = destino
+        while atual is not None:
+            caminho.append(atual)
+            atual = anterior[atual]
+        return distancias[destino], caminho[::-1]
+
     @classmethod
-    def from_file(
-        cls,
-        nome_arquivo
-    ):
-
-        caminho = Path(
-            nome_arquivo
-        )
-
-        linhas = [
-            linha.strip()
-            for linha
-            in caminho.read_text(
-                encoding="utf-8"
-            ).splitlines()
-            if linha.strip()
-        ]
-
-        if len(linhas) < 3:
-            raise ValueError(
-                "Arquivo grafo.txt inválido."
-            )
-
-        indice = 0
-
-        # Tipo do grafo
-        tipo = int(
-            linhas[indice]
-        )
-
-        indice += 1
-
-        # Número de vértices
-        n = int(
-            linhas[indice]
-        )
-
-        indice += 1
-
-        ponderado = tipo in (
-            1, 2, 3,
-            5, 6, 7
-        )
-
-        rotulos = {}
-
-        # Vértices
-        for _ in range(n):
-
-            partes = linhas[indice].split(
-                maxsplit=1
-            )
-
-            indice += 1
-
-            vertice = int(
-                partes[0]
-            )
-
-            if len(partes) > 1:
-                nome = partes[1]
-            else:
-                nome = (
-                    f"Vértice {vertice}"
-                )
-
-            rotulos[
-                vertice
-            ] = nome
-
-        # Número de arestas
-        m_arquivo = int(
-            linhas[indice]
-        )
-
-        indice += 1
-
-        # Determina se é não orientado
-        nao_orientado = (
-            tipo <= 3
-        )
-
-        classe = (
-            GrafoND
-            if nao_orientado
-            else cls
-        )
-
-        grafo = classe(
-            n=n,
-            ponderado=ponderado,
-            tipo=tipo,
-            rotulos=rotulos
-        )
-
-        # Arestas
-        for _ in range(m_arquivo):
-
-            if indice >= len(linhas):
-                raise ValueError(
-                    "Quantidade de arestas "
-                    "menor que o valor informado."
-                )
-
-            partes = (
-                linhas[indice].split()
-            )
-
-            indice += 1
-
-            if len(partes) < 2:
-                raise ValueError(
-                    "Aresta inválida."
-                )
-
-            origem = int(
-                partes[0]
-            )
-
-            destino = int(
-                partes[1]
-            )
-
-            peso = None
-
-            if len(partes) >= 3:
-                peso = float(
-                    partes[2]
-                )
-
-            grafo.insereA(
-                origem,
-                destino,
-                peso
-            )
-
+    def from_file(cls, nome_arquivo):
+        linhas = [linha.strip() for linha in Path(nome_arquivo).read_text(encoding="utf-8").splitlines() if linha.strip()]
+        if len(linhas) < 2:
+            raise ValueError("Arquivo de grafo incompleto.")
+        # Formato antigo dos exercícios: n, m e pares de vértices.
+        primeiro, segundo = int(linhas[0]), int(linhas[1])
+        if len(linhas) == segundo + 2 and all(len(linha.split()) == 2 for linha in linhas[2:]):
+            grafo = cls(primeiro)
+            for linha in linhas[2:]:
+                v, w = map(int, linha.split())
+                grafo.insereA(v, w)
+            return grafo
+        tipo, n = primeiro, segundo
+        if tipo not in range(8) or n < 0 or len(linhas) < n + 3:
+            raise ValueError("Cabeçalho de grafo inválido.")
+        rotulos, pesos = [], []
+        peso_vertice = tipo in (1, 3, 5, 7)
+        peso_aresta = tipo in (2, 3, 6, 7)
+        for i, linha in enumerate(linhas[2:2+n]):
+            partes = shlex.split(linha)
+            if len(partes) < (3 if peso_vertice else 2) or int(partes[0]) != i:
+                raise ValueError("Vértice inválido ou fora de ordem.")
+            rotulos.append(" ".join(partes[1:-1] if peso_vertice else partes[1:]))
+            pesos.append(float(partes[-1]) if peso_vertice else None)
+        m = int(linhas[2+n])
+        if m < 0 or len(linhas) != n + 3 + m:
+            raise ValueError("Quantidade de arestas inválida.")
+        classe = GrafoND if tipo < 4 else Grafo
+        grafo = classe(n, ponderado=peso_aresta, tipo=tipo, rotulos=rotulos, pesos_vertices=pesos)
+        for linha in linhas[3+n:]:
+            partes = linha.split()
+            if len(partes) != (3 if peso_aresta else 2):
+                raise ValueError("Aresta inválida.")
+            v, w = map(int, partes[:2])
+            grafo._validar_vertice(v)
+            grafo._validar_vertice(w)
+            if grafo._tem_aresta(v, w):
+                raise ValueError("Aresta duplicada.")
+            grafo.insereA(v, w, float(partes[2]) if peso_aresta else None)
         return grafo
 
     loadFromFile = from_file
 
-    # Gravação
+    def to_file(self, nome_arquivo):
+        arestas = [(i, j) for i in range(self.n) for j in range(self.n)
+                   if (self.direcionado or i < j) and self._tem_aresta(i, j)]
+        if self.peso_no_vertice and any(peso is None for peso in self.pesos_vertices):
+            raise ValueError("Informe o peso de todos os vértices antes de salvar.")
+        with Path(nome_arquivo).open("w", encoding="utf-8") as arquivo:
+            arquivo.write(f"{self.tipo}\n{self.n}\n")
+            for i, nome in enumerate(self.rotulos):
+                peso = f" {self.pesos_vertices[i]}" if self.peso_no_vertice else ""
+                if self.peso_no_vertice and self.pesos_vertices[i] is None:
+                    raise ValueError("Informe o peso de todos os vértices antes de salvar.")
+                arquivo.write(f"{i} {shlex.quote(nome)}{peso}\n")
+            arquivo.write(f"{len(arestas)}\n")
+            for i, j in arestas:
+                peso = f" {self.adj[i][j]}" if self.ponderado else ""
+                arquivo.write(f"{i} {j}{peso}\n")
 
-    def to_file(
-        self,
-        nome_arquivo
-    ):
-
-        with open(
-            nome_arquivo,
-            "w",
-            encoding="utf-8"
-        ) as arquivo:
-
-            # Tipo
-            arquivo.write(
-                f"{self.tipo}\n"
-            )
-
-            # Número de vértices
-            arquivo.write(
-                f"{self.n}\n"
-            )
-
-            # Vértices
-            for i in range(
-                self.n
-            ):
-
-                nome = (
-                    self.nome_vertice(i)
-                )
-
-                arquivo.write(
-                    f"{i} {nome}\n"
-                )
-
-            # Arestas
-            arestas = []
-
-            nao_orientado = (
-                self.tipo <= 3
-            )
-
-            for i in range(
-                self.n
-            ):
-
-                inicio = (
-                    i + 1
-                    if nao_orientado
-                    else 0
-                )
-
-                for j in range(
-                    inicio,
-                    self.n
-                ):
-
-                    if not self._tem_aresta(
-                        i,
-                        j
-                    ):
-                        continue
-
-                    peso = (
-                        self.adj[i][j]
-                    )
-
-                    arestas.append(
-                        (
-                            i,
-                            j,
-                            peso
-                        )
-                    )
-
-            arquivo.write(
-                f"{len(arestas)}\n"
-            )
-
-            for (
-                origem,
-                destino,
-                peso
-            ) in arestas:
-
-                if self.ponderado:
-
-                    arquivo.write(
-                        f"{origem} "
-                        f"{destino} "
-                        f"{peso}\n"
-                    )
-
-                else:
-
-                    arquivo.write(
-                        f"{origem} "
-                        f"{destino}\n"
-                    )
+    salvar_arquivo = to_file
 
 
 class GrafoPonderado(Grafo):
@@ -758,6 +638,38 @@ class GrafoND(Grafo):
             == self.n
         )
 
+    eh_conexo = is_connected
+
+    def componentes_conexas(self, excluidos=()):
+        restantes = set(range(self.n)) - set(excluidos)
+        componentes = []
+        while restantes:
+            inicio = next(iter(restantes))
+            componente = {inicio}
+            fila = deque([inicio])
+            restantes.remove(inicio)
+            while fila:
+                atual = fila.popleft()
+                vizinhos = [v for v in restantes if self._tem_aresta(atual, v)]
+                for v in vizinhos:
+                    restantes.remove(v)
+                    componente.add(v)
+                    fila.append(v)
+            componentes.append(sorted(componente))
+        return componentes
+
+    def simular_falha_estacao(self, vertice):
+        self._validar_vertice(vertice)
+        nome = self.rotulos[vertice].split("|", 1)[0].strip()
+        indisponiveis = [i for i, rotulo in enumerate(self.rotulos)
+                         if rotulo.split("|", 1)[0].strip().casefold() == nome.casefold()]
+        antes = self.componentes_conexas()
+        depois = self.componentes_conexas(indisponiveis)
+        return {"nome": nome, "vertices_indisponiveis": indisponiveis,
+                "componentes_antes": antes, "componentes_depois": depois,
+                "continua_conexo": len(depois) <= 1,
+                "falha_critica": len(depois) > len(antes)}
+
     def remove_vertex(self, v):
 
         self._validar_vertice(v)
@@ -767,24 +679,9 @@ class GrafoND(Grafo):
         for linha in self.adj:
             linha.pop(v)
 
-        novos_rotulos = {}
+        self.rotulos.pop(v)
+        self.pesos_vertices.pop(v)
 
-        for antigo_id, nome \
-                in self.rotulos.items():
-
-            if antigo_id == v:
-                continue
-
-            novo_id = (
-                antigo_id - 1
-                if antigo_id > v
-                else antigo_id
-            )
-            novos_rotulos[
-                novo_id
-            ] = nome
-
-        self.rotulos = novos_rotulos
         self.n -= 1
         self.m = sum(
             1

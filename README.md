@@ -18,6 +18,39 @@ O foco principal do projeto é a análise estrutural da rede, permitindo verific
 
 ---
 
+## Organização
+
+- `main.py`: inicia o programa.
+- `interface/menu.py`: exibe o menu e encaminha as opções.
+- `interface/acoes_menu.py`: funções chamadas pelas opções do menu.
+- `grafos/`: implementações por matriz e por lista de adjacência.
+- `dados/grafo.txt`: dados da rede.
+- `visualizacao/`: geração da visualização com PyVis.
+- `testes/`: testes dos exercícios e do projeto.
+- `executar_testes.py`: executa os testes.
+
+## Executar no Codespaces
+
+No terminal, dentro da pasta que contém `main.py`, execute:
+
+```bash
+python -m pip install -r requirements.txt
+python main.py
+```
+
+Escolha `a` para ler o grafo. As opções `k`, `l` e `m` calculam um caminho mínimo, simulam a falha de uma estação e geram uma visualização interativa. No Codespaces, abra `grafo_completo.html` gerado para visualizar o grafo; a abertura automática de navegador pode não funcionar.
+
+Para executar os testes:
+
+```bash
+python executar_testes.py
+```
+
+A opção `b` sobrescreve `dados/grafo.txt`. Os pesos são aproximações; Dijkstra exige pesos não negativos. A simulação de falha não altera o grafo carregado.
+
+
+---
+
 ## Modelagem do Grafo
 
 O estudo de caso utiliza um grafo:

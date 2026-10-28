@@ -11,13 +11,9 @@ Resumo: Executa todos os testes do projeto.
 
 import unittest
 
-from testeProjeto import TesteProjeto
+from testes.testeProjeto import TesteProjeto
 
-try:
-    from testeExercicios import TesteExercicios
-except ImportError:
-    TesteExercicios = None
-
+from testes.testeExercicios import TesteExercicios
 
 def montar_suite():
     suite = unittest.TestSuite()

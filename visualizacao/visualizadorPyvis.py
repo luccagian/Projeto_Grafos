@@ -10,9 +10,29 @@ Resumo: implementação da ferramenta PyVis para a visualização do grafo
 
 
 from pathlib import Path
+from html import escape
 import webbrowser
 
 from pyvis.network import Network
+
+
+# Cores aproximadas das linhas. Altere os códigos para ajustar o visual.
+CORES_LINHAS = {
+    "Linha 1-Azul": "#005CA9",
+    "Linha 2-Verde": "#008061",
+    "Linha 3-Vermelha": "#EE372F",
+    "Linha 4-Amarela": "#FFD400",
+    "Linha 5-Lilás": "#9B3894",
+    "Linha 7-Rubi": "#9E005D",
+    "Linha 8-Diamante": "#A8A9AD",
+    "Linha 9-Esmeralda": "#00A88F",
+    "Linha 10-Turquesa": "#00A6A8",
+    "Linha 11-Coral": "#F0785A",
+    "Linha 12-Safira": "#133C8D",
+    "Linha 13-Jade": "#00A86B",
+    "Linha 15-Prata": "#B5B8B9",
+}
+COR_PADRAO = "#808080"
 
 
 def extrair_linha(nome):
@@ -66,9 +86,9 @@ def visualizar_grafo(
         width="100%",
         bgcolor="#101418",
         font_color="white",
-        directed=False,
-        select_menu=True,
-        filter_menu=True,
+        directed=grafo.direcionado,
+        select_menu=False,
+        filter_menu=False,
         cdn_resources="in_line"
     )
 
@@ -108,9 +128,9 @@ def visualizar_grafo(
         )
 
         titulo = (
-            f"<b>{estacao}</b><br>"
-            f"{linha}<br>"
-            f"Vértice: {vertice}<br>"
+            f"Estação: {estacao}\n"
+            f"{linha}\n"
+            f"Vértice: {vertice}\n"
             f"Grau: {grau}"
         )
 
@@ -125,7 +145,7 @@ def visualizar_grafo(
                     30
                 )
             ),
-            group=linha
+            color=CORES_LINHAS.get(linha, COR_PADRAO)
         )
 
     # Arestas
@@ -137,7 +157,7 @@ def visualizar_grafo(
     ):
 
         for destino in range(
-            origem + 1,
+            0 if grafo.direcionado else origem + 1,
             grafo.n
         ):
 
@@ -170,22 +190,19 @@ def visualizar_grafo(
             if peso == 0:
 
                 titulo = (
-                    f"<b>Integração / "
-                    f"transferência</b><br>"
-                    f"{origem_nome}<br>"
-                    f"↕<br>"
+                    f"Integração / transferência\n"
+                    f"{origem_nome}\n"
+                    f"↕\n"
                     f"{destino_nome}"
                 )
 
             else:
 
                 titulo = (
-                    f"{origem_nome}"
-                    f"<br>↔<br>"
-                    f"{destino_nome}"
-                    f"<br>"
-                    f"Distância: "
-                    f"{peso} km"
+                    f"{origem_nome}\n"
+                    f"↔\n"
+                    f"{destino_nome}\n"
+                    f"Distância: {peso} km"
                 )
 
             rede.add_edge(
@@ -241,6 +258,44 @@ def visualizar_grafo(
         str(caminho),
         open_browser=False
     )
+
+    # O seletor mostra nomes; o ID continua interno para localizar o nó.
+    vertices = sorted(
+        ((grafo.nome_vertice(i), i) for i in range(grafo.n)),
+        key=lambda item: (item[0].casefold(), item[1]),
+    )
+    opcoes = "\n".join(
+        f'<option value="{indice}">{escape(nome)}</option>'
+        for nome, indice in vertices
+    )
+    seletor = f"""
+    <div style="padding: 12px; font-family: sans-serif;">
+      <label for="seletor-estacao">Selecionar estação: </label>
+      <select id="seletor-estacao">
+        <option value="">Escolha uma estação</option>
+        {opcoes}
+      </select>
+    </div>
+    """
+    script = """
+    <script>
+      document.getElementById('seletor-estacao').addEventListener('change', function () {
+        if (this.value === '') {
+          network.unselectAll();
+          return;
+        }
+        const id = Number(this.value);
+        network.selectNodes([id]);
+        network.focus(id, {scale: 1.5, animation: true});
+      });
+    </script>
+    """
+    html = caminho.read_text(encoding="utf-8")
+    if "<body>" not in html or "</body>" not in html:
+        raise ValueError("Não foi possível inserir o seletor no HTML gerado pelo PyVis.")
+    html = html.replace("<body>", "<body>" + seletor, 1)
+    html = html.replace("</body>", script + "</body>", 1)
+    caminho.write_text(html, encoding="utf-8")
 
     print(
         "\n========================================"

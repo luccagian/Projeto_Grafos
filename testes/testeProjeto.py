@@ -13,7 +13,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from grafoMatriz import Grafo, GrafoND
+from grafos.grafoMatriz import Grafo, GrafoND
 
 
 class TesteProjeto(unittest.TestCase):

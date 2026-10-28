@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Integrantes:
 Gabriel Medina - 10426931
@@ -12,20 +11,13 @@ Resumo: Executa todos os testes do projeto.
 import unittest
 
 from testes.testeProjeto import TesteProjeto
-
 from testes.testeExercicios import TesteExercicios
+
 
 def montar_suite():
     suite = unittest.TestSuite()
-
-    if TesteExercicios is not None:
-        suite.addTests(
-            unittest.defaultTestLoader.loadTestsFromTestCase(TesteExercicios)
-        )
-
-    suite.addTests(
-        unittest.defaultTestLoader.loadTestsFromTestCase(TesteProjeto)
-    )
+    suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(TesteExercicios))
+    suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(TesteProjeto))
     return suite
 
 

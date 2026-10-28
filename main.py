@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Integrantes:
 Gabriel Medina - 10426931

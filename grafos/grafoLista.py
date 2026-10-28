@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Integrantes:
 Gabriel Medina - 10426931
@@ -59,20 +58,13 @@ class Grafo:
     def isSink(self, v):
         return int(self.inDegree(v) > 0 and self.outDegree(v) == 0)
 
-    fonte = isSource
-    sorvedouro = isSink
-
     def isSymmetric(self):
         return int(all((j in self.listaAdj[i]) == (i in self.listaAdj[j])
                        for i in range(self.n) for j in range(self.n)))
 
-    simetrico = isSymmetric
-
     def isComplete(self):
         return int(all(i == j or j in self.listaAdj[i]
                        for i in range(self.n) for j in range(self.n)))
-
-    completo = isComplete
 
     def equals(self, outro):
         if not isinstance(outro, Grafo) or self.n != outro.n:
@@ -80,16 +72,10 @@ class Grafo:
         return int(all(set(self.listaAdj[i]) == set(outro.listaAdj[i])
                        for i in range(self.n)))
 
-    igual = equals
-    isEqual = equals
-
     def invert(self):
         for lista in self.listaAdj:
             lista.reverse()
         return self
-
-    inverte = invert
-    inverteListas = invert
 
     def remove_vertex(self, v):
         self._validar_vertice(v)
@@ -99,13 +85,11 @@ class Grafo:
         self.n -= 1
         self.m = sum(len(vizinhos) for vizinhos in self.listaAdj)
 
-    removeV = remove_vertex
-    removeVertice = remove_vertex
+    # Leitura e gravação
 
     @classmethod
     def from_file(cls, nome_arquivo):
-        linhas = [linha.split() for linha in Path(nome_arquivo).read_text(
-            encoding="utf-8").splitlines() if linha.strip()]
+        linhas = [linha.split() for linha in Path(nome_arquivo).read_text(encoding='utf-8').splitlines() if linha.strip()]
         if len(linhas) < 2:
             raise ValueError("Arquivo deve conter V e A")
         n, quantidade = int(linhas[0][0]), int(linhas[1][0])
@@ -116,8 +100,6 @@ class Grafo:
         for origem, destino, *_ in dados:
             grafo.insereA(int(origem), int(destino))
         return grafo
-
-    loadFromFile = from_file
 
     @classmethod
     def from_matriz(cls, matriz):
@@ -134,22 +116,13 @@ class Grafo:
                     grafo.insereA(i, j)
         return grafo
 
-    convertFromMatrix = from_matriz
-    converteMatriz = from_matriz
-
     def to_matriz(self):
-        try:
-            from .grafoMatriz import Grafo as GrafoMatriz
-        except ImportError:
-            from grafoMatriz import Grafo as GrafoMatriz
+        from grafos.grafoMatriz import Grafo as GrafoMatriz
         matriz = GrafoMatriz(self.n)
         for i, vizinhos in enumerate(self.listaAdj):
             for j in vizinhos:
                 matriz.insereA(i, j)
         return matriz
-
-    toMatrix = to_matriz
-    converte = to_matriz
 
     def _alcancaveis(self, origem):
         visitados = {origem}
@@ -209,19 +182,9 @@ class GrafoND(Grafo):
             return 0
         return int(len(self._alcancaveis(0)) != self.n)
 
-    connected = connectivity_type
-    tipoConexidade = connectivity_type
-
     def remove_vertex(self, v):
-        self._validar_vertice(v)
-        self.listaAdj.pop(v)
-        for vizinhos in self.listaAdj:
-            vizinhos[:] = [w - 1 if w > v else w for w in vizinhos if w != v]
-        self.n -= 1
-        self.m = sum(len(vizinhos) for vizinhos in self.listaAdj) // 2
-
-    removeV = remove_vertex
-    removeVertice = remove_vertex
+        super().remove_vertex(v)
+        self.m //= 2
 
     def complemento(self):
         resultado = self.__class__(self.n)
@@ -230,7 +193,3 @@ class GrafoND(Grafo):
                 if j not in self.listaAdj[i]:
                     resultado.insereA(i, j)
         return resultado
-
-
-TGrafo = Grafo
-TGrafoND = GrafoND

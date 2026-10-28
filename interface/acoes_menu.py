@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Integrantes:
 Gabriel Medina - 10426931
@@ -25,7 +24,7 @@ def ler_grafo(caminho: Path):
 
 
 def gravar_grafo(grafo, caminho: Path) -> None:
-    grafo.salvar_arquivo(caminho)
+    grafo.to_file(caminho)
     print(f"\n[SUCESSO] Grafo gravado em '{caminho}'.")
 
 
@@ -79,7 +78,7 @@ def mostrar_conteudo_arquivo(caminho: Path) -> None:
 
 def mostrar_grafo(grafo) -> None:
     print("\n--- Representação do grafo ---")
-    grafo.mostrar_lista_adjacencia()
+    grafo.show()
 
 
 def mostrar_caminho_minimo(grafo) -> None:
@@ -137,7 +136,7 @@ def mostrar_conexidade(grafo) -> None:
     print("\n--- Análise de conexidade ---")
 
     if isinstance(grafo, GrafoND):
-        estado = "CONEXO" if grafo.eh_conexo() else "DESCONEXO"
+        estado = "CONEXO" if grafo.is_connected() else "DESCONEXO"
         print(f"Grafo não orientado: {estado}")
         print(
             "Grafo reduzido/FCONEX não se aplica ao modelo não orientado "
@@ -159,7 +158,7 @@ def mostrar_conexidade(grafo) -> None:
         f"Grafo reduzido: {reduzido.n} vértices/componentes e "
         f"{reduzido.m} arestas."
     )
-    reduzido.mostrar_lista_adjacencia()
+    reduzido.show()
 
 
 def visualizar(grafo) -> None:

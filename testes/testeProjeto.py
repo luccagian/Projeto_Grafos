@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Integrantes:
 Gabriel Medina - 10426931
@@ -59,16 +58,16 @@ class TesteProjeto(unittest.TestCase):
 
     def test_05_conexidade_nao_dirigida(self):
         g = self.criar_grafo_nd_ponderado()
-        self.assertTrue(g.eh_conexo())
+        self.assertTrue(g.is_connected())
         g.removeA(1, 2)
-        self.assertFalse(g.eh_conexo())
+        self.assertFalse(g.is_connected())
 
     def test_06_salvar_e_ler_formato(self):
         g = self.criar_grafo_nd_ponderado()
 
         with tempfile.TemporaryDirectory() as pasta:
             caminho = Path(pasta) / "grafo.txt"
-            g.salvar_arquivo(caminho)
+            g.to_file(caminho)
             carregado = Grafo.from_file(caminho)
 
         self.assertIsInstance(carregado, GrafoND)

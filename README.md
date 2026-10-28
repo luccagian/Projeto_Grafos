@@ -20,14 +20,23 @@ O foco principal do projeto é a análise estrutural da rede, permitindo verific
 
 ## Organização
 
+O projeto mantém as implementações de grafos e separa as funções de interação em poucas pastas:
+
 - `main.py`: inicia o programa.
-- `interface/menu.py`: exibe o menu e encaminha as opções.
-- `interface/acoes_menu.py`: funções chamadas pelas opções do menu.
-- `grafos/`: implementações por matriz e por lista de adjacência.
-- `dados/grafo.txt`: dados da rede.
-- `visualizacao/`: geração da visualização com PyVis.
+- `interface/menu.py`: exibe as opções e encaminha a escolha do usuário.
+- `interface/acoes_menu.py`: contém as funções chamadas pelas opções do menu.
+- `grafos/grafoMatriz.py` e `grafos/grafoLista.py`: implementações dos grafos.
+- `dados/grafo.txt`: dados da rede, com os pesos atualizados em quilômetros.
+- `dados/coordenadas_estacoes.csv`: coordenadas para a disposição geográfica no visualizador.
+- `visualizacao/visualizadorPyvis.py`: gera a visualização interativa.
 - `testes/`: testes dos exercícios e do projeto.
 - `executar_testes.py`: executa os testes.
+
+A organização em pastas foi feita para facilitar a manutenção. As funções dos exercícios mantêm nomes como `insereA`, `removeA` e `degree`. As operações comuns usam `remove_vertex`, `show`, `to_file` e `is_connected`; o construtor recebe `tipo_grafo`.
+
+Os arquivos `__init__.py` identificam os pacotes. As pastas `__pycache__` são geradas automaticamente pelo Python e estão incluídas no `.gitignore`.
+
+---
 
 ## Executar no Codespaces
 
@@ -100,17 +109,97 @@ i) Apresentar conexidade
 j) Encerrar a aplicação
 k) Calcular caminho mínimo
 l) Simular falha de estação
+m) Visualizar grafo interativo com PyVis
 ```
 
 As opções de `a` até `j` correspondem às funcionalidades obrigatórias do projeto.
 
-As opções `k` e `l` foram adicionadas para realizar análises relacionadas ao problema estudado.
+As opções `k` e `l` foram adicionadas para realizar análises relacionadas ao problema estudado. A opção `m` apresenta a rede em uma visualização interativa.
+
+---
+
+## Visualização com PyVis
+
+A opção `m` gera `grafo_completo.html` a partir do grafo carregado na memória, incluindo alterações feitas pelo menu antes de salvar o TXT. O HTML reúne o desenho da rede, os controles e o cálculo de caminhos no navegador.
+
+### Abrir a visualização
+
+1. Execute `python main.py`.
+2. Escolha `a` para carregar `dados/grafo.txt`.
+3. Escolha `m` para gerar o HTML.
+4. Abra o `grafo_completo.html` gerado. No Codespaces, baixe o arquivo e abra no navegador do computador caso a prévia não o execute corretamente.
+
+Depois de atualizar o código ou o grafo, gere novamente o HTML e atualize a página aberta no navegador.
+
+### Interface e controles
+
+O painel lateral reúne a seleção das estações, o cálculo de caminhos e a simulação de remoções. A área principal mostra o grafo, o seletor de disposição e a legenda das cores das linhas. Os números no cabeçalho descrevem a rede original carregada, antes das remoções visuais.
+
+| Controle | Função |
+|---|---|
+| Estações e linhas | Seleciona os vértices pelo nome completo, incluindo a linha |
+| Calcular menor caminho | Calcula o caminho entre exatamente dois vértices selecionados |
+| Remover vértices | Retira temporariamente os selecionados e suas conexões da visualização |
+| Restaurar rede | Desfaz todas as remoções visuais e mantém a disposição escolhida |
+| Disposição | Alterna entre os modos Livre e Geográfica |
+| Ajustar visão | Enquadra os vértices que permanecem na visualização |
+
+Use Ctrl, ou Command no Mac, para selecionar vários nomes na lista ou vários nós no grafo. Passe o mouse sobre uma estação para consultar seu nome, linha e grau; sobre uma aresta, para consultar a distância em quilômetros ou a indicação de integração. Os graus desses avisos se referem ao grafo original.
+
+### Caminho mínimo e remoções
+
+Selecione exatamente dois vértices e clique em **Calcular menor caminho**. O HTML executa Dijkstra com os pesos das arestas, destaca o trajeto e apresenta a distância total aproximada em quilômetros. Caso os vértices estejam desconectados, informa que não existe caminho.
+
+O cálculo usa somente os vértices e as arestas que permanecem na visualização. Após remover vértices, selecione novamente os dois extremos e calcule o caminho para explorar as alternativas disponíveis.
+
+A remoção visual afeta apenas os vértices selecionados, isto é, as combinações de estação e linha. Não remove automaticamente as outras representações da mesma estação. Para analisar a falha de uma estação inteira e suas componentes conexas, use a opção `l` do menu.
+
+As ações do navegador não alteram `dados/grafo.txt` nem o grafo carregado no menu. O botão **Restaurar rede** recupera a rede inicialmente usada para gerar o HTML.
+
+### Disposição livre e geográfica
+
+- **Livre:** usa a simulação de forças do PyVis. Permite arrastar os nós e facilita a exploração das conexões; as posições não são geográficas.
+- **Geográfica:** usa latitude e longitude das estações, convertidas em uma projeção local com o norte para cima. A física é desativada e os nós ficam fixos. O zoom e a movimentação da área do mapa continuam disponíveis.
+
+A troca de disposição preserva as remoções, os pesos e os resultados dos caminhos. As conexões geográficas são retas: não há mapa de ruas ao fundo nem reprodução das curvas dos trilhos. Representações de uma mesma estação podem ficar sobrepostas.
+
+Para habilitar a opção geográfica, mantenha estes arquivos na estrutura do projeto:
+
+```text
+visualizacao/visualizadorPyvis.py
+dados/coordenadas_estacoes.csv
+```
+
+O CSV relaciona cada rótulo do grafo à sua latitude e longitude. As informações de código, nome e fonte permitem identificar a origem das coordenadas. O Python inclui as posições no HTML durante a geração; não é necessário consultar o CSV ou acessar a internet para alternar a disposição no HTML já gerado.
+
+Se o CSV estiver ausente ou não contiver coordenadas para todos os rótulos do grafo carregado, a opção geográfica fica desativada, mantendo o modo livre disponível. Caso adicione uma estação ao grafo, inclua também suas coordenadas antes de gerar a visualização geográfica.
+
+### Aparência, escala e manutenção
+
+As cores dos vértices são definidas pela tabela `CORES_LINHAS` em `visualizacao/visualizadorPyvis.py`. As cores são aplicadas diretamente aos nós, sem o parâmetro `group`, para evitar a escolha automática de cores pelo PyVis.
+
+O tamanho dos nós é definido pelo grau, não pela distância ou pelo tamanho real das estações. A projeção geográfica utiliza atualmente 80 unidades visuais por quilômetro:
+
+```python
+escala = 6371 * 80
+```
+
+O fator `80` pode ser ajustado para mudar a escala das posições em relação ao tamanho dos círculos, mantendo as proporções das coordenadas. Como o enquadramento automático acomoda a rede inteira, use o zoom para explorar regiões com estações próximas. Alterar a escala visual não modifica os pesos nem o cálculo de Dijkstra.
+
+O arquivo do visualizador reúne Python, HTML, CSS e JavaScript. Essa organização mantém a distribuição simples, em um único arquivo. As principais partes são:
+
+- `carregar_posicoes()`: lê as coordenadas e calcula as posições geográficas;
+- `criar_controles()`: monta o painel, os estilos e o JavaScript das interações;
+- `adicionar_controles()`: insere esse conteúdo no HTML gerado pelo PyVis;
+- `visualizar_grafo()`: cria os nós e as arestas, configura o PyVis e gera o arquivo final.
+
+A configuração da física e da interação fica reunida em `set_options()`. Para mudar a apresentação, edite o visualizador e gere novamente o HTML. Evite editar o HTML gerado diretamente, pois a próxima geração substitui esse arquivo.
 
 ---
 
 ## Matriz de Adjacência
 
-O arquivo `grafoMatriz.py` contém a principal implementação utilizada pelo projeto.
+O arquivo `grafos/grafoMatriz.py` contém a principal implementação utilizada pelo projeto.
 
 Entre as funcionalidades disponíveis estão:
 
@@ -138,7 +227,7 @@ A classe `Grafo` representa grafos dirigidos e a classe `GrafoND` representa gra
 
 ## Lista de Adjacência
 
-O arquivo `grafoLista.py` contém a implementação baseada em lista de adjacência desenvolvida durante as atividades da disciplina.
+O arquivo `grafos/grafoLista.py` contém a implementação baseada em lista de adjacência desenvolvida durante as atividades da disciplina.
 
 Entre as operações disponíveis estão:
 
@@ -191,31 +280,36 @@ Essa funcionalidade permite observar se a indisponibilidade de uma estação:
 
 ## Requisitos
 
-- Python 3
+- Python 3.10 ou superior, para a sintaxe utilizada no código.
+- PyVis para gerar a visualização interativa.
 
-Não é necessária a instalação de bibliotecas externas para executar a aplicação.
+Instale as dependências com:
 
-O projeto utiliza apenas módulos da biblioteca padrão do Python.
+```bash
+python -m pip install -r requirements.txt
+```
+
+As operações de grafos e os testes utilizam a biblioteca padrão do Python. O PyVis é necessário apenas para a opção `m`. Não é necessário instalar NumPy, PyTorch ou executar os modelos de redes neurais do repositório usado como fonte dos dados.
 
 ---
 
 ## Como Executar
 
-Abra um terminal na pasta do projeto.
-
-Para iniciar a aplicação:
+Abra um terminal na pasta que contém `main.py` e execute:
 
 ```bash
-python menu.py
+python main.py
 ```
 
 No Windows também pode ser utilizado:
 
 ```bash
-py menu.py
+py main.py
 ```
 
-O programa exibirá o menu principal e permitirá carregar o arquivo `grafo.txt`.
+Escolha `a` para carregar `dados/grafo.txt`. O arquivo já contém os pesos atualizados em quilômetros; não é necessário recalcular as distâncias a cada execução.
+
+A opção `b` salva o estado atual do grafo sobre `dados/grafo.txt`. A simulação de falha não modifica o grafo carregado.
 
 ---
 
@@ -241,9 +335,9 @@ Ran 42 tests
 OK
 ```
 
-Atualmente o projeto possui 42 testes automatizados.
+Atualmente a versão distribuída possui 42 testes automatizados.
 
-Eles incluem os 30 testes das atividades anteriores da disciplina e 12 testes específicos das adaptações realizadas para o projeto.
+Eles incluem 30 testes das atividades anteriores da disciplina e 12 testes das adaptações realizadas para o projeto.
 
 ---
 
@@ -270,28 +364,32 @@ Os testes adicionais verificam, entre outras situações:
 
 ```text
 Projeto_Grafos/
-├── grafoMatriz.py
-├── grafoLista.py
-├── menu.py
-├── grafo.txt
-├── testeExercicios.py
-├── testeProjeto.py
+├── main.py
 ├── executar_testes.py
-└── README.md
+├── requirements.txt
+├── .gitignore
+├── README.md
+├── interface/
+│   ├── __init__.py
+│   ├── menu.py
+│   └── acoes_menu.py
+├── grafos/
+│   ├── __init__.py
+│   ├── grafoMatriz.py
+│   └── grafoLista.py
+├── dados/
+│   ├── grafo.txt
+│   └── coordenadas_estacoes.csv
+├── visualizacao/
+│   ├── __init__.py
+│   └── visualizadorPyvis.py
+└── testes/
+    ├── __init__.py
+    ├── testeExercicios.py
+    └── testeProjeto.py
 ```
 
-### Descrição dos arquivos
-
-| Arquivo | Descrição |
-|---|---|
-| `grafoMatriz.py` | Classes e operações principais sobre grafos utilizando matriz de adjacência |
-| `grafoLista.py` | Implementação utilizando lista de adjacência |
-| `menu.py` | Menu principal e interação com o usuário |
-| `grafo.txt` | Dados do estudo de caso da rede metroferroviária |
-| `testeExercicios.py` | Testes das atividades anteriores da disciplina |
-| `testeProjeto.py` | Testes específicos das funcionalidades do projeto |
-| `executar_testes.py` | Executa todos os testes automatizados |
-| `README.md` | Documentação do projeto |
+O arquivo `dados/grafo.txt` já contém os pesos atualizados. A substituição desse arquivo foi suficiente para o menu, o Dijkstra e o visualizador passarem a usar os novos valores. O cálculo das distâncias foi realizado previamente, fora da execução normal do programa.
 
 ---
 
@@ -321,8 +419,8 @@ O início do arquivo utilizado no estudo de caso possui estrutura semelhante a:
 2 "São Judas | Linha 1-Azul"
 ...
 230
-0 1 0.917
-1 2 0.917
+0 1 1.266387
+1 2 1.050555
 ...
 ```
 
@@ -338,15 +436,42 @@ Onde:
 
 ## Pesos das Arestas
 
-Os pesos representam distâncias aproximadas em quilômetros.
+Os pesos representam distâncias geográficas aproximadas em quilômetros. A base dos dados e do método de cálculo é o repositório [The-Use-of-Graph-Neural-Networks-in-Rail-Transport-Planning](https://github.com/rafaelapz/The-Use-of-Graph-Neural-Networks-in-Rail-Transport-Planning), desenvolvido para o trabalho *The Use of Graph Neural Networks in Rail Transport Planning: A Case Study in the São Paulo Metropolitan Region*, de R. Zyngier e I. Oliveira.
 
-Quando havia um valor específico disponível para determinado trecho, esse valor foi utilizado.
+Foram utilizados:
 
-Para os demais segmentos foram utilizadas estimativas baseadas nas distâncias médias entre as estações das respectivas linhas.
+- [`scripts/dados/estacoes.csv`](https://github.com/rafaelapz/The-Use-of-Graph-Neural-Networks-in-Rail-Transport-Planning/blob/main/scripts/dados/estacoes.csv), como fonte das coordenadas das estações;
+- [`scripts/distancia_min_e_max.py`](https://github.com/rafaelapz/The-Use-of-Graph-Neural-Networks-in-Rail-Transport-Planning/blob/main/scripts/distancia_min_e_max.py), como referência para o cálculo de Haversine, com raio terrestre de 6371 km.
 
-Por esse motivo, os pesos devem ser interpretados como aproximações utilizadas para a modelagem computacional, e não como medições exatas de todos os trechos ferroviários.
+Os pesos foram calculados previamente a partir dessas coordenadas e incorporados ao arquivo `dados/grafo.txt`. A tabela de tempos de viagem do repositório não foi utilizada, pois o peso adotado neste projeto é distância, em quilômetros.
 
-As conexões de integração entre linhas em uma mesma estação utilizam peso `0`.
+### Como os pesos foram atualizados
+
+1. Cada rótulo do grafo foi associado à estação correspondente na fonte.
+2. As coordenadas foram associadas aos rótulos para o cálculo realizado previamente.
+3. Para cada conexão existente entre estações diferentes, foi calculada a distância de Haversine, arredondada para seis casas decimais.
+4. As integrações entre representações da mesma estação permaneceram com peso `0`.
+5. Os valores foram gravados em `dados/grafo.txt`, mantendo os 203 vértices e as 230 arestas.
+
+Foram atualizados os pesos de 190 trechos, mantendo as 40 integrações com peso zero. As estimativas anteriores baseadas em médias por linha foram substituídas pelo cálculo geográfico.
+
+As diferenças de nome entre as bases foram tratadas explicitamente. Por exemplo, Jabaquara-Comitê Paralímpico Brasileiro corresponde a Terminal Intermodal Jabaquara, e Engenheiro Cardoso corresponde a Eng. Cardoso. Os nomes do nosso grafo foram preservados.
+
+### Uso dos novos pesos
+
+Os novos pesos foram incorporados pela substituição de `dados/grafo.txt`, sem adicionar módulos de recálculo ou arquivos de auditoria. A tabela `dados/coordenadas_estacoes.csv` foi incluída depois para permitir a disposição geográfica opcional no visualizador; sua leitura não altera os pesos do grafo.
+
+O programa lê diretamente os pesos já presentes no TXT. Para utilizá-los, execute `python main.py` e escolha `a` para carregar o grafo. As opções de caminho mínimo e visualização usarão os valores atualizados.
+
+As distâncias não são recalculadas automaticamente durante a execução. Para uma futura alteração, será necessário editar os pesos do TXT ou gerar externamente uma nova versão do arquivo.
+
+### Complemento dos dados e limitações
+
+A base recebida não continha Ambuitá. Por isso, 202 registros de vértices foram associados às coordenadas do repositório e um registro utilizou a coordenada complementar de [Ambuitá no Mapcarta, baseada no OpenStreetMap](https://mapcarta.com/pt/N13724871811): latitude `-23.53024` e longitude `-46.97277`. Essa é a única complementação de coordenadas em relação ao repositório usado como base.
+
+Os resultados dependem da qualidade das coordenadas. Na base utilizada, Lapa possui uma única coordenada, reutilizada nas representações das linhas 7 e 8. As coordenadas de Capuava e Mauá produzem aproximadamente 8,28 km entre elas; esse trecho merece conferência na fonte e foi mantido sem correção automática.
+
+A distância de Haversine não acompanha as curvas dos trilhos. Portanto, os pesos não representam medições exatas de percurso ferroviário nem tempo de viagem. Da mesma forma, integração de peso `0` é uma convenção da modelagem e não significa que a transferência seja instantânea.
 
 ---
 
@@ -364,10 +489,10 @@ No estudo de caso atual, o grafo é classificado como conexo, ou seja, existe ca
 
 | Classe | Arquivo | Representação | Tipo |
 |---|---|---|---|
-| `Grafo` | `grafoMatriz.py` | Matriz | Dirigido |
-| `GrafoND` | `grafoMatriz.py` | Matriz | Não dirigido |
-| `Grafo` | `grafoLista.py` | Lista | Dirigido |
-| `GrafoND` | `grafoLista.py` | Lista | Não dirigido |
+| `Grafo` | `grafos/grafoMatriz.py` | Matriz | Dirigido |
+| `GrafoND` | `grafos/grafoMatriz.py` | Matriz | Não dirigido |
+| `Grafo` | `grafos/grafoLista.py` | Lista | Dirigido |
+| `GrafoND` | `grafos/grafoLista.py` | Lista | Não dirigido |
 
 ---
 

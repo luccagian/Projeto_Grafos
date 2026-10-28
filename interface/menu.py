@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Integrantes:
 Gabriel Medina - 10426931
@@ -100,7 +99,7 @@ def menu(caminho: Path = ARQUIVO_PADRAO) -> None:
             elif opcao == "l":
                 if exigir_grafo(grafo):
                     acoes.simular_falha_estacao(grafo)
-                   
+
             elif opcao == "m":
                 if exigir_grafo(grafo):
                     acoes.visualizar(grafo)
@@ -110,4 +109,3 @@ def menu(caminho: Path = ARQUIVO_PADRAO) -> None:
 
         except (ValueError, IndexError, OSError) as erro:
             print(f"\n[ERRO] {erro}")
-

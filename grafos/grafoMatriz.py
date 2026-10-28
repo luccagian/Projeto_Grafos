@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Integrantes:
 Gabriel Medina - 10426931
@@ -22,23 +21,31 @@ class Grafo:
     def __init__(
         self,
         n=TAM_MAX_DEFAULT,
-        ponderado=False,
-        tipo=None,
-        rotulos=None,
+        ponderado=None,
         tipo_grafo=None,
+        rotulos=None,
         pesos_vertices=None
     ):
         if n < 0:
-            raise ValueError(
-                "A quantidade de vértices não pode ser negativa"
-            )
+            raise ValueError('A quantidade de vértices não pode ser negativa')
 
         self.n = n
         self.m = 0
-        self.tipo = tipo_grafo if tipo_grafo is not None else tipo
-        if self.tipo is None:
-            self.tipo = (2 if ponderado else 0) if isinstance(self, GrafoND) else (6 if ponderado else 4)
-        self.ponderado = ponderado
+        if tipo_grafo is None:
+            if isinstance(self, GrafoND):
+                tipo_grafo = 2 if ponderado else 0
+            else:
+                tipo_grafo = 6 if ponderado else 4
+        if tipo_grafo not in range(8):
+            raise ValueError("O tipo do grafo deve estar entre 0 e 7.")
+        if isinstance(self, GrafoND) != (tipo_grafo < 4):
+            raise ValueError("O tipo informado não corresponde à classe do grafo.")
+
+        tem_peso_aresta = tipo_grafo in (2, 3, 6, 7)
+        if ponderado is not None and ponderado != tem_peso_aresta:
+            raise ValueError("O parâmetro ponderado não corresponde ao tipo do grafo.")
+        self.tipo_grafo = tipo_grafo
+        self.ponderado = tem_peso_aresta
         self.pesos_vertices = list(pesos_vertices) if pesos_vertices is not None else [None] * n
         if len(self.pesos_vertices) != n:
             raise ValueError("Quantidade de pesos de vértices inválida.")
@@ -52,20 +59,15 @@ class Grafo:
         if len(self.rotulos) != n:
             raise ValueError("Quantidade de rótulos inválida.")
 
-        vazio = None if ponderado else 0
+        vazio = None if self.ponderado else 0
 
-        self.adj = [
-            [vazio for _ in range(n)]
-            for _ in range(n)
-        ]
+        self.adj = [[vazio for _ in range(n)] for _ in range(n)]
 
     # Validação
 
     def _validar_vertice(self, v):
         if not isinstance(v, int) or not 0 <= v < self.n:
-            raise IndexError(
-                f"Vértice inválido: {v}"
-            )
+            raise IndexError(f'Vértice inválido: {v}')
 
     def _tem_aresta(self, v, w):
         if self.ponderado:
@@ -91,8 +93,6 @@ class Grafo:
         self.pesos_vertices.append(peso)
         return novo_id
 
-    insereV = inserir_vertice
-
     # Arestas
 
     def insereA(self, v, w, peso=None):
@@ -103,11 +103,7 @@ class Grafo:
             return
 
         if self.ponderado:
-            valor = (
-                1.0
-                if peso is None
-                else float(peso)
-            )
+            valor = 1.0 if peso is None else float(peso)
         else:
             valor = 1
 
@@ -122,11 +118,7 @@ class Grafo:
         if not self._tem_aresta(v, w):
             return
 
-        self.adj[v][w] = (
-            None
-            if self.ponderado
-            else 0
-        )
+        self.adj[v][w] = None if self.ponderado else 0
 
         self.m -= 1
 
@@ -135,26 +127,15 @@ class Grafo:
     def inDegree(self, v):
         self._validar_vertice(v)
 
-        return sum(
-            1
-            for u in range(self.n)
-            if self._tem_aresta(u, v)
-        )
+        return sum(1 for u in range(self.n) if self._tem_aresta(u, v))
 
     def outDegree(self, v):
         self._validar_vertice(v)
 
-        return sum(
-            1
-            for w in range(self.n)
-            if self._tem_aresta(v, w)
-        )
+        return sum(1 for w in range(self.n) if self._tem_aresta(v, w))
 
     def degree(self, v):
-        return (
-            self.inDegree(v)
-            + self.outDegree(v)
-        )
+        return self.inDegree(v) + self.outDegree(v)
 
     # Remoção de vértice
 
@@ -178,68 +159,40 @@ class Grafo:
             if self._tem_aresta(i, j)
         )
 
-    removeV = remove_vertex
-    removeVertice = remove_vertex
-
     # Alcance
 
     def _alcancaveis(self, origem):
-
         visitados = {origem}
 
         fila = deque([origem])
 
         while fila:
-
             atual = fila.popleft()
 
             for vizinho in range(self.n):
+                if self._tem_aresta(atual, vizinho) and vizinho not in visitados:
+                    visitados.add(vizinho)
 
-                if (
-                    self._tem_aresta(
-                        atual,
-                        vizinho
-                    )
-                    and vizinho
-                    not in visitados
-                ):
-
-                    visitados.add(
-                        vizinho
-                    )
-
-                    fila.append(
-                        vizinho
-                    )
+                    fila.append(vizinho)
 
         return visitados
 
     # Conexidade para grafo dirigido
 
     def categoria_conexidade(self):
-
         if self.n == 0:
             return 0
 
-        alc = [
-            self._alcancaveis(i)
-            for i in range(self.n)
-        ]
+        alc = [self._alcancaveis(i) for i in range(self.n)]
 
-        if all(
-            len(alc[i]) == self.n
-            for i in range(self.n)
-        ):
+        if all(len(alc[i]) == self.n for i in range(self.n)):
             return 3
 
         if all(
             j in alc[i]
             or i in alc[j]
             for i in range(self.n)
-            for j in range(
-                i + 1,
-                self.n
-            )
+            for j in range(i + 1, self.n)
         ):
             return 2
 
@@ -248,37 +201,14 @@ class Grafo:
         fila = deque([0])
 
         while fila:
-
             atual = fila.popleft()
 
-            for vizinho in range(
-                self.n
-            ):
+            for vizinho in range(self.n):
+                conectado = self._tem_aresta(atual, vizinho) or self._tem_aresta(vizinho, atual)
+                if conectado and vizinho not in visitados:
+                    visitados.add(vizinho)
 
-                if (
-                    (
-                        self._tem_aresta(
-                            atual,
-                            vizinho
-                        )
-                        or
-                        self._tem_aresta(
-                            vizinho,
-                            atual
-                        )
-                    )
-                    and
-                    vizinho
-                    not in visitados
-                ):
-
-                    visitados.add(
-                        vizinho
-                    )
-
-                    fila.append(
-                        vizinho
-                    )
+                    fila.append(vizinho)
 
         if len(visitados) == self.n:
             return 1
@@ -288,110 +218,60 @@ class Grafo:
     # Grafo reduzido
 
     def grafo_reduzido(self):
-
         if self.n == 0:
             return Grafo(0)
 
-        alc = [
-            self._alcancaveis(i)
-            for i in range(self.n)
-        ]
+        alc = [self._alcancaveis(i) for i in range(self.n)]
 
         componentes = []
 
-        restantes = set(
-            range(self.n)
-        )
+        restantes = set(range(self.n))
 
         while restantes:
-
             v = min(restantes)
 
-            componente = {
-                u
-                for u in restantes
-                if (
-                    u in alc[v]
-                    and v in alc[u]
-                )
-            }
+            componente = {u for u in restantes if u in alc[v] and v in alc[u]}
 
-            componentes.append(
-                componente
-            )
+            componentes.append(componente)
 
             restantes -= componente
 
-        indice = {
-            v: i
-            for i, comp
-            in enumerate(componentes)
-            for v in comp
-        }
+        indice = {v: i for i, comp in enumerate(componentes) for v in comp}
 
-        reduzido = Grafo(
-            len(componentes)
-        )
+        reduzido = Grafo(len(componentes))
 
         for v in range(self.n):
-
             for w in range(self.n):
-
-                if (
-                    self._tem_aresta(v, w)
-                    and
-                    indice[v]
-                    != indice[w]
-                ):
-
-                    reduzido.insereA(
-                        indice[v],
-                        indice[w]
-                    )
+                if self._tem_aresta(v, w) and indice[v] != indice[w]:
+                    reduzido.insereA(indice[v], indice[w])
 
         return reduzido
 
     # Mostrar
 
     def show(self):
-
         print(
-            f"\nn: {self.n} | Tipo: {self.tipo}"
+            f"\nn: {self.n} | Tipo: {self.tipo_grafo}"
             f" | Vértices: {self.n}"
             f" | Arestas: {self.m}"
         )
 
         for i in range(self.n):
-
             vizinhos = []
 
             for j in range(self.n):
-
                 if self._tem_aresta(i, j):
-
                     peso = self.adj[i][j]
 
-                    vizinhos.append(
-                        f"{j}({peso})"
-                    )
+                    vizinhos.append(f'{j}({peso})')
 
             nome = self.nome_vertice(i)
 
-            print(
-                f"{i:3d} "
-                f"[{nome}] -> "
-                + ", ".join(vizinhos)
-            )
+            print(f'{i:3d} [{nome}] -> ' + ', '.join(vizinhos))
 
         print("fim da impressao")
 
-    mostrar_lista_adjacencia = show
-
-    # Leitura do grafo.txt
-
-    @property
-    def tipo_grafo(self):
-        return self.tipo
+    # Propriedades e verificações
 
     @property
     def direcionado(self):
@@ -399,7 +279,7 @@ class Grafo:
 
     @property
     def peso_no_vertice(self):
-        return self.tipo in (1, 3, 5, 7)
+        return self.tipo_grafo in (1, 3, 5, 7)
 
     @property
     def peso_na_aresta(self):
@@ -460,6 +340,8 @@ class Grafo:
             atual = anterior[atual]
         return distancias[destino], caminho[::-1]
 
+    # Leitura e gravação
+
     @classmethod
     def from_file(cls, nome_arquivo):
         linhas = [linha.strip() for linha in Path(nome_arquivo).read_text(encoding="utf-8").splitlines() if linha.strip()]
@@ -489,7 +371,7 @@ class Grafo:
         if m < 0 or len(linhas) != n + 3 + m:
             raise ValueError("Quantidade de arestas inválida.")
         classe = GrafoND if tipo < 4 else Grafo
-        grafo = classe(n, ponderado=peso_aresta, tipo=tipo, rotulos=rotulos, pesos_vertices=pesos)
+        grafo = classe(n, ponderado=peso_aresta, tipo_grafo=tipo, rotulos=rotulos, pesos_vertices=pesos)
         for linha in linhas[3+n:]:
             partes = linha.split()
             if len(partes) != (3 if peso_aresta else 2):
@@ -502,74 +384,40 @@ class Grafo:
             grafo.insereA(v, w, float(partes[2]) if peso_aresta else None)
         return grafo
 
-    loadFromFile = from_file
-
     def to_file(self, nome_arquivo):
         arestas = [(i, j) for i in range(self.n) for j in range(self.n)
                    if (self.direcionado or i < j) and self._tem_aresta(i, j)]
         if self.peso_no_vertice and any(peso is None for peso in self.pesos_vertices):
             raise ValueError("Informe o peso de todos os vértices antes de salvar.")
         with Path(nome_arquivo).open("w", encoding="utf-8") as arquivo:
-            arquivo.write(f"{self.tipo}\n{self.n}\n")
+            arquivo.write(f"{self.tipo_grafo}\n{self.n}\n")
             for i, nome in enumerate(self.rotulos):
                 peso = f" {self.pesos_vertices[i]}" if self.peso_no_vertice else ""
-                if self.peso_no_vertice and self.pesos_vertices[i] is None:
-                    raise ValueError("Informe o peso de todos os vértices antes de salvar.")
                 arquivo.write(f"{i} {shlex.quote(nome)}{peso}\n")
             arquivo.write(f"{len(arestas)}\n")
             for i, j in arestas:
                 peso = f" {self.adj[i][j]}" if self.ponderado else ""
                 arquivo.write(f"{i} {j}{peso}\n")
 
-    salvar_arquivo = to_file
-
 
 class GrafoPonderado(Grafo):
-
-    def __init__(
-        self,
-        n=Grafo.TAM_MAX_DEFAULT,
-        ponderado=True,
-        tipo=6,
-        rotulos=None
-    ):
-
-        super().__init__(
-            n=n,
-            ponderado=True,
-            tipo=tipo,
-            rotulos=rotulos
-        )
+    def __init__(self, n=Grafo.TAM_MAX_DEFAULT, rotulos=None):
+        super().__init__(n, tipo_grafo=6, rotulos=rotulos)
 
 
 class GrafoND(Grafo):
-
-    def insereA(
-        self,
-        v,
-        w,
-        peso=None
-    ):
-
+    def insereA(self, v, w, peso=None):
         self._validar_vertice(v)
         self._validar_vertice(w)
 
         if v == w:
-            raise ValueError(
-                "Grafo não orientado "
-                "simples não aceita laços."
-            )
+            raise ValueError('Grafo não orientado simples não aceita laços.')
 
         if self._tem_aresta(v, w):
             return
 
         if self.ponderado:
-
-            valor = (
-                1.0
-                if peso is None
-                else float(peso)
-            )
+            valor = 1.0 if peso is None else float(peso)
 
         else:
             valor = 1
@@ -579,23 +427,14 @@ class GrafoND(Grafo):
 
         self.m += 1
 
-    def removeA(
-        self,
-        v,
-        w
-    ):
-
+    def removeA(self, v, w):
         self._validar_vertice(v)
         self._validar_vertice(w)
 
         if not self._tem_aresta(v, w):
             return
 
-        vazio = (
-            None
-            if self.ponderado
-            else 0
-        )
+        vazio = None if self.ponderado else 0
 
         self.adj[v][w] = vazio
         self.adj[w][v] = vazio
@@ -603,42 +442,23 @@ class GrafoND(Grafo):
         self.m -= 1
 
     def degree(self, v):
-
         self._validar_vertice(v)
 
-        return sum(
-            1
-            for w in range(self.n)
-            if self._tem_aresta(v, w)
-        )
+        return sum(1 for w in range(self.n) if self._tem_aresta(v, w))
 
     def connectivity_type(self):
-
         if self.n == 0:
             return 0
 
-        visitados = self._alcancaveis(
-            0
-        )
+        visitados = self._alcancaveis(0)
 
-        return int(
-            len(visitados)
-            != self.n
-        )
+        return int(len(visitados) != self.n)
 
     def is_connected(self):
-
         if self.n == 0:
             return True
 
-        return (
-            len(
-                self._alcancaveis(0)
-            )
-            == self.n
-        )
-
-    eh_conexo = is_connected
+        return len(self._alcancaveis(0)) == self.n
 
     def componentes_conexas(self, excluidos=()):
         restantes = set(range(self.n)) - set(excluidos)
@@ -671,33 +491,6 @@ class GrafoND(Grafo):
                 "falha_critica": len(depois) > len(antes)}
 
     def remove_vertex(self, v):
-
-        self._validar_vertice(v)
-
-        self.adj.pop(v)
-
-        for linha in self.adj:
-            linha.pop(v)
-
-        self.rotulos.pop(v)
-        self.pesos_vertices.pop(v)
-
-        self.n -= 1
-        self.m = sum(
-            1
-            for i in range(self.n)
-            for j in range(
-                i + 1,
-                self.n
-            )
-            if self._tem_aresta(
-                i,
-                j
-            )
-        )
-
-    removeV = remove_vertex
-    removeVertice = remove_vertex
-
-TGrafo = Grafo
-TGrafoND = GrafoND
+        super().remove_vertex(v)
+        # A matriz não orientada registra cada aresta nos dois sentidos.
+        self.m //= 2

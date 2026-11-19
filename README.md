@@ -12,9 +12,9 @@ O foco principal do projeto é a análise estrutural da rede, permitindo verific
 
 ## Integrantes
 
-- Lucas Carmo — 10439830
-- Gabriel Medina — 10426931
-- Gian Lucca Campanha Ribeiro — 10438361
+- Lucas Carmo - 10439830
+- Gabriel Medina - 10426931
+- Gian Lucca Campanha Ribeiro - 10438361
 
 ---
 

@@ -6,6 +6,11 @@ Lucas Carmo - 10439830
 
 Arquivo: menu.py
 Resumo: menu principal do projeto de resiliência da rede metroferroviária.
+
+Histórico de alterações:
+    2026-10-28 | Gian Lucca Campanha Ribeiro | Refatoração da estrutura do projeto em pastas.
+    2026-10-28 | Gian Lucca Campanha Ribeiro | Refatoração, visualização PyVis e pesos em km (Haversine).
+    2026-11-19 | Gabriel Medina | Inclusão das opções n e o (Parte 3) e do histórico no cabeçalho.
 """
 
 from pathlib import Path
@@ -36,6 +41,8 @@ def exibir_menu() -> None:
     print("k) Calcular caminho mínimo entre duas estações")
     print("l) Simular falha de uma estação")
     print("m) Visualizar grafo completo - PyVis")
+    print("n) Investigar resiliência da rede (Parte 3 - item 1)")
+    print("o) Analisar características do grafo (Parte 3 - item 2)")
 
 
 def exigir_grafo(grafo):
@@ -104,8 +111,16 @@ def menu(caminho: Path = ARQUIVO_PADRAO) -> None:
                 if exigir_grafo(grafo):
                     acoes.visualizar(grafo)
 
+            elif opcao == "n":
+                if exigir_grafo(grafo):
+                    acoes.investigar_resiliencia(grafo)
+
+            elif opcao == "o":
+                if exigir_grafo(grafo):
+                    acoes.analisar_caracteristicas(grafo)
+
             else:
-                print("\n[ERRO] Opção inválida. Escolha uma letra entre 'a' e 'm'.")
+                print("\n[ERRO] Opção inválida. Escolha uma letra entre 'a' e 'o'.")
 
         except (ValueError, IndexError, OSError) as erro:
             print(f"\n[ERRO] {erro}")

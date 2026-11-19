@@ -6,6 +6,12 @@ Lucas Carmo - 10439830
 
 Arquivo: visualizadorPyvis.py
 Resumo: implementação da ferramenta PyVis para a visualização do grafo
+
+Histórico de alterações:
+    2026-10-26 | Gian Lucca Campanha Ribeiro | Semi-refatoração da estrutura do projeto.
+    2026-10-28 | Gian Lucca Campanha Ribeiro | Refatoração da estrutura do projeto em pastas.
+    2026-10-28 | Gian Lucca Campanha Ribeiro | Refatoração, visualização PyVis e pesos em km (Haversine).
+    2026-11-19 | Gabriel Medina | Inclusão do histórico de alterações no cabeçalho.
 """
 
 

@@ -6,6 +6,13 @@ Lucas Carmo - 10439830
 
 Arquivo: testeExercicios.py
 Resumo: Testes dos exercícios propostos na atividade.
+
+Histórico de alterações:
+    2026-09-30 | Gian Lucca Campanha Ribeiro | Adição do arquivo ao repositório (upload).
+    2026-10-01 | Gian Lucca Campanha Ribeiro | Adição do arquivo ao repositório (upload).
+    2026-10-28 | Gian Lucca Campanha Ribeiro | Refatoração da estrutura do projeto em pastas.
+    2026-10-28 | Gian Lucca Campanha Ribeiro | Refatoração, visualização PyVis e pesos em km (Haversine).
+    2026-11-19 | Gabriel Medina | Inclusão do histórico de alterações no cabeçalho.
 """
 
 import io

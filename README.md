@@ -12,9 +12,9 @@ O foco principal do projeto é a análise estrutural da rede, permitindo verific
 
 ## Integrantes
 
-- Lucas Carmo - 10439830
-- Gabriel Medina - 10426931
-- Gian Lucca Campanha Ribeiro - 10438361
+- Lucas Carmo — 10439830
+- Gabriel Medina — 10426931
+- Gian Lucca Campanha Ribeiro — 10438361
 
 ---
 
@@ -26,6 +26,7 @@ O projeto mantém as implementações de grafos e separa as funções de intera�
 - `interface/menu.py`: exibe as opções e encaminha a escolha do usuário.
 - `interface/acoes_menu.py`: contém as funções chamadas pelas opções do menu.
 - `grafos/grafoMatriz.py` e `grafos/grafoLista.py`: implementações dos grafos.
+- `grafos/analises.py`: técnicas da Parte 3 (resiliência e características do grafo).
 - `dados/grafo.txt`: dados da rede, com os pesos atualizados em quilômetros.
 - `dados/coordenadas_estacoes.csv`: coordenadas para a disposição geográfica no visualizador.
 - `visualizacao/visualizadorPyvis.py`: gera a visualização interativa.
@@ -110,11 +111,47 @@ j) Encerrar a aplicação
 k) Calcular caminho mínimo
 l) Simular falha de estação
 m) Visualizar grafo interativo com PyVis
+n) Investigar resiliência da rede (Parte 3 - item 1)
+o) Analisar características do grafo (Parte 3 - item 2)
 ```
 
 As opções de `a` até `j` correspondem às funcionalidades obrigatórias do projeto.
 
 As opções `k` e `l` foram adicionadas para realizar análises relacionadas ao problema estudado. A opção `m` apresenta a rede em uma visualização interativa.
+
+As opções `n` e `o` correspondem aos itens 1 e 2 da Parte 3, descritos na seção seguinte.
+
+---
+
+## Parte 3: Investigação da Resiliência e Características do Grafo
+
+A Parte 3 acrescentou duas opções ao menu. As técnicas ficam em `grafos/analises.py` e usam a matriz de adjacência do grafo carregado (opção `a`), sem modificá-lo. Os valores abaixo valem para `dados/grafo.txt` (203 vértices e 230 arestas).
+
+### Item 1: investigar uma solução com técnicas da disciplina (opção `n`)
+
+O problema do projeto é identificar pontos frágeis da rede e verificar caminhos alternativos quando uma estação falha. A opção `n` abre um submenu com quatro análises:
+
+| Análise | Técnica | Resultado no estudo de caso |
+| --- | --- | --- |
+| 1) Estações críticas | Pontos de articulação (Tarjan, DFS com low-link) | 95 dos 203 vértices estação-linha |
+| 2) Trechos críticos | Pontes (Tarjan) | 95 das 230 arestas (93 trechos e 2 integrações) |
+| 3) Ranking de falhas | Remoção de todas as linhas de cada estação e recálculo das componentes conexas | 93 das 175 estações dividem a rede; Brás isola 39 vértices, Tatuapé 34 e Palmeiras-Barra Funda 17 |
+| 4) Rota alternativa | Dijkstra sem a estação indisponível | Vila Mariana → Tucuruvi: 13,482 km; sem a Sé, 22,631 km (+9,149 km) |
+
+Conclusão: a rede é predominantemente em árvore (230 arestas para 203 vértices, apenas 28 ciclos independentes), então a maior parte dos trechos não tem caminho alternativo.
+
+### Item 2: características do problema modelado (opção `o`)
+
+| Característica | Técnica | Resultado |
+| --- | --- | --- |
+| Graus | Contagem de adjacências | mínimo 1, máximo 6 (Palmeiras-Barra Funda), média 2,27 |
+| Euler | Teorema de Euler | 46 vértices de grau ímpar: não possui ciclo nem percurso euleriano |
+| Coloração | Welsh-Powell e maior clique (Bron-Kerbosch) | 5 cores; clique de tamanho 5, logo o número cromático é 5; não é bipartido |
+| Hamilton | Condições necessárias (NP-completo) | não admite ciclo (13 vértices de grau 1 e 95 pontos de articulação) nem caminho (13 vértices de grau 1) |
+| Árvore geradora mínima | Kruskal | 315,072 km de 366,697 km; 28 trechos redundantes |
+| Diâmetro e raio | Dijkstra a partir de cada vértice | diâmetro 104,551 km (Estudantes ↔ Jundiaí); raio 52,792 km, centro em Palmeiras-Barra Funda (Linha 3) |
+
+Para Hamilton não existe algoritmo eficiente; por isso a aplicação testa condições necessárias. Se alguma for violada, a inexistência está provada; se nenhuma for, o resultado é "inconclusivo".
 
 ---
 
@@ -330,14 +367,14 @@ py executar_testes.py
 O resultado esperado é:
 
 ```text
-Ran 42 tests
+Ran 69 tests
 
 OK
 ```
 
-Atualmente a versão distribuída possui 42 testes automatizados.
+Atualmente a versão distribuída possui 69 testes automatizados.
 
-Eles incluem 30 testes das atividades anteriores da disciplina e 12 testes das adaptações realizadas para o projeto.
+Eles incluem 30 testes das atividades anteriores da disciplina, 12 testes das adaptações realizadas para o projeto e 27 testes das análises da Parte 3.
 
 ---
 
@@ -358,6 +395,14 @@ Os testes adicionais verificam, entre outras situações:
 - simulação de falha sem modificar permanentemente o grafo;
 - remoção lógica de todas as ocorrências de uma mesma estação durante uma simulação.
 
+Os testes da Parte 3 (`testes/testeAnalises.py`) verificam:
+
+- pontos de articulação e pontes em grafos pequenos de resultado conhecido e, no grafo real, por conferência com a remoção de cada vértice e de cada aresta;
+- ranking de falhas coerente com a simulação da opção `l`;
+- rota alternativa com desvio, sem alternativa e com origem indisponível;
+- graus, Euler, bipartição, coloração própria, Hamilton, Kruskal, diâmetro e raio;
+- que as análises não alteram o grafo carregado.
+
 ---
 
 ## Estrutura do Projeto
@@ -376,7 +421,8 @@ Projeto_Grafos/
 ├── grafos/
 │   ├── __init__.py
 │   ├── grafoMatriz.py
-│   └── grafoLista.py
+│   ├── grafoLista.py
+│   └── analises.py
 ├── dados/
 │   ├── grafo.txt
 │   └── coordenadas_estacoes.csv
@@ -386,7 +432,8 @@ Projeto_Grafos/
 └── testes/
     ├── __init__.py
     ├── testeExercicios.py
-    └── testeProjeto.py
+    ├── testeProjeto.py
+    └── testeAnalises.py
 ```
 
 O arquivo `dados/grafo.txt` já contém os pesos atualizados. A substituição desse arquivo foi suficiente para o menu, o Dijkstra e o visualizador passarem a usar os novos valores. O cálculo das distâncias foi realizado previamente, fora da execução normal do programa.
